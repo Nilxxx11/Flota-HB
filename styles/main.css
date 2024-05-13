@@ -2,7 +2,7 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css";
 /* HEADER */
 :root{
-    --navbar: #046cbc;
+    --navbar: #ffff;
     --text_navbar: #ff7;
     --border_main: #fff;
     --border_contadores: #ffff
