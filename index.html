@@ -18,24 +18,23 @@
   <main class="main-content">
     <div class="contadores">
       <p id="rif-counter">Placas con Rif: 0</p>
-<p id="gps-counter">Placas con GPS: 0</p>
-<p id="camera-counter">Placas con Cámara: 0</p>
-
+      <p id="gps-counter">Placas con GPS: 0</p>
+      <p id="camera-counter">Placas con Cámara: 0</p>
     </div>
     <div class="crud-container">
       <div class="crud-header">
         <h1>Flota</h1>
         <button class="button is-success is-dark" id="nuevo">Agregar</button>
         <div class="field has-addons">
-  <div class="control">
-    <input class="input" type="text" placeholder="Buscar por nombre" id="search-input">
-  </div>
-  <div class="control">
-    <button class="button is-info" id="search-button">
-      Buscar
-    </button>
-  </div>
-</div>
+          <div class="control">
+            <input class="input" type="text" placeholder="Buscar por nombre" id="search-input">
+          </div>
+          <div class="control">
+            <button class="button is-info" id="search-button">
+              Buscar
+            </button>
+          </div>
+        </div>
       </div>
       <table class="table">
         <thead>
@@ -44,7 +43,7 @@
             <th>RIF</th>
             <th>GPS</th>
             <th>CAMARA</th>
-            <th>ultima revision</th>
+            <th>última revisión</th>
             <th></th>
           </tr>
         </thead>
@@ -63,7 +62,6 @@
         </tbody>
       </table>
     </div>
-    
   </main>
   <div class="modal" id="modal">
     <div class="modal-background"></div>
@@ -72,7 +70,6 @@
         <p class="modal-card-title">Nuevo Vehiculo</p>
       </header>
       <section class="modal-card-body">
-        <!-- Content ... -->
         <form id="register-form">
           <div class="field">
             <label class="label">Placa</label>
@@ -83,23 +80,38 @@
           <div class="field">
             <label class="label">RIF</label>
             <div class="control">
-              <input class="input" type="text" name="rif">
+              <div class="select">
+                <select name="rif">
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="field">
             <label class="label">GPS</label>
             <div class="control">
-              <input class="input" type="text" name="gps">
+              <div class="select">
+                <select name="gps">
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="field">
-            <label class="label">CAMARA</label>
+            <label class="label">Cámara</label>
             <div class="control">
-              <input class="input" type="text" name="camara">
+              <div class="select">
+                <select name="camara">
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="field">
-            <label class="label">Ult-revision</label>
+            <label class="label">Última revisión</label>
             <div class="control">
               <input class="input" name="fecha">
             </div>
@@ -128,13 +140,13 @@
 
     // Reemplaza con tu configuración de Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyBz9VDD17ZiieA9lkSViIZts7TiYE2a4yE",
-      authDomain: "crud-85196.firebaseapp.com",
-      databaseURL: "https://crud-85196-default-rtdb.firebaseio.com",
-      projectId: "crud-85196",
-      storageBucket: "crud-85196.appspot.com",
-      messagingSenderId: "340343732832",
-      appId: "1:340343732832:web:af3aaddbef9d5c3a092105"
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_DOMINIO.firebaseapp.com",
+      databaseURL: "https://TU_DOMINIO.firebaseio.com",
+      projectId: "TU_PROYECTO_ID",
+      storageBucket: "TU_BUCKET.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
     };
 
     // Inicializar Firebase
@@ -144,3 +156,4 @@
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
+
