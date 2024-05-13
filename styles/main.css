@@ -14,6 +14,12 @@
   color: var(--text_navbar);
   font-weight: bold;
 }
+/* LOGO */
+.navbar-logo {
+  max-height: 3rem; /* Ajusta el tamaño de la imagen según sea necesario */
+  margin-right: 1rem; /* Espacio entre la imagen y el texto */
+}
+
 /* MAIN */
 .main-content {
   height: 50vh;
