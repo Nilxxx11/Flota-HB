@@ -4,7 +4,8 @@
 :root{
     --navbar: #046cbc;
     --text_navbar: #ff7;
-    --border_main: #fff
+    --border_main: #fff;
+    --border_contadores: #d4f1db
 }
 .navbar {
   background-color: var(--navbar);
@@ -26,7 +27,7 @@
   align-items: center; /* Alinear los contadores verticalmente */
   width: 90%;
   margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
-  border: 1px solid var(--border_main);
+  border: 1px solid var(--border_contadores);
   padding: 1rem 2rem;
   overflow: auto;
   box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
