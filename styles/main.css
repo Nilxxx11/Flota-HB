@@ -21,9 +21,9 @@
   align-items: center; /* Alinear elementos en el centro horizontalmente */
   justify-content: center;
 }
-
-.contadores {
-  width: 90%;
+.contadores,
+.crud-container {
+  width: 100%; /* Cambiar el ancho al 100% para ocupar toda la línea */
   margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
   border: 1px solid var(--border_main);
   padding: 1rem 2rem;
@@ -31,16 +31,6 @@
   box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
   border-radius: 1rem;
 }
-
-.crud-container {
-  width: 90%;
-  border: 1px solid var(--border_main);
-  padding: 1rem 2rem;
-  overflow: auto;
-  box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
-  border-radius: 1rem;
-}
-
 
 .crud-header{
   display: flex;
