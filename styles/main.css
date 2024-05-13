@@ -1,1 +1,36 @@
-
+/* Se importa Bulma */
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css";
+/* HEADER */
+:root{
+    --navbar: #465;
+    --text_navbar: #ff7;
+    --border_main: #fff
+}
+.navbar {
+  background-color: var(--navbar);
+}
+.navbar-item {
+  color: var(--text_navbar);
+  font-weight: bold;
+}
+/* MAIN */
+.main-content{
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.crud-container{
+  width: 90%;
+  border: 1px solid var(--border_main);
+  padding: 1rem 2rem;
+  overflow: auto;
+  box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
+  border-radius: 1rem;
+}
+.crud-header{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem 1rem 2rem;
+  border-bottom: 1px solid;
+}
