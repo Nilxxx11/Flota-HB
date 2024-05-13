@@ -8,6 +8,10 @@ const modal = document.getElementById('modal');
 const cancel = document.getElementById('cancel');
 const form = document.getElementById('register-form');
 
+let countWithRif = 0;
+let countWithGPS = 0;
+let countWithCamera = 0;
+
 // Variable global para almacenar la clave del registro que se está editando
 let editKey = null;
 
@@ -148,6 +152,11 @@ const renderStudents = (students) => {
   const tbody = document.querySelector('tbody');
   tbody.innerHTML = '';
 
+  // Reiniciar los contadores
+  countWithRif = 0;
+  countWithGPS = 0;
+  countWithCamera = 0;
+
   Object.entries(students).forEach(([key, student]) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -162,8 +171,29 @@ const renderStudents = (students) => {
       </td>
     `;
     tbody.appendChild(tr);
+
+    // Contar placas con Rif
+    if (student.rif) {
+      countWithRif++;
+    }
+
+    // Contar placas con GPS
+    if (student.gps) {
+      countWithGPS++;
+    }
+
+    // Contar placas con cámara
+    if (student.camara) {
+      countWithCamera++;
+    }
   });
+
+  // Mostrar los contadores en algún lugar de tu interfaz
+  document.getElementById('rif-counter').innerText = `Placas con Rif: ${countWithRif}`;
+  document.getElementById('gps-counter').innerText = `Placas con GPS: ${countWithGPS}`;
+  document.getElementById('camera-counter').innerText = `Placas con Cámara: ${countWithCamera}`;
 };
+
 
 // Función para filtrar estudiantes por nombre
 const filterStudentsByPlaca = (students, searchText) => {
