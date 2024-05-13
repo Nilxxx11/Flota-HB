@@ -173,17 +173,17 @@ const renderStudents = (students) => {
     tbody.appendChild(tr);
 
     // Contar placas con Rif
-    if (student.rif) {
+    if (student.rif === 'si') {
       countWithRif++;
     }
 
     // Contar placas con GPS
-    if (student.gps) {
+    if (student.gps === 'si') {
       countWithGPS++;
     }
 
     // Contar placas con cámara
-    if (student.camara) {
+    if (student.camara === 'si') {
       countWithCamera++;
     }
   });
