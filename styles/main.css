@@ -18,12 +18,13 @@
   height: 50vh;
   display: flex;
   flex-direction: column; /* Organizar elementos en columnas */
-  align-items: flex-start; /* Alinear elementos en la parte superior */
+  align-items: center; /* Alinear elementos en el centro horizontalmente */
   justify-content: center;
 }
 
 .contadores {
   width: 90%;
+  margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
   border: 1px solid var(--border_main);
   padding: 1rem 2rem;
   overflow: auto;
@@ -39,6 +40,7 @@
   box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
   border-radius: 1rem;
 }
+
 
 .crud-header{
   display: flex;
