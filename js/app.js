@@ -189,9 +189,9 @@ const renderStudents = (students) => {
   });
 
   // Mostrar los contadores en algún lugar de tu interfaz
-  document.getElementById('rif-counter').innerText = `Placas con Rif: ${countWithRif}`;
-  document.getElementById('gps-counter').innerText = `Placas con GPS: ${countWithGPS}`;
-  document.getElementById('camera-counter').innerText = `Placas con Cámara: ${countWithCamera}`;
+  document.getElementById('rif-counter').innerText = `Con Rif: ${countWithRif}`;
+  document.getElementById('gps-counter').innerText = `Con GPS: ${countWithGPS}`;
+  document.getElementById('camera-counter').innerText = `Con Cámara: ${countWithCamera}`;
 };
 
 
