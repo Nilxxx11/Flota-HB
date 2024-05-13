@@ -3,7 +3,7 @@
 /* HEADER */
 :root{
     --navbar: #ffff;
-    --text_navbar: #ff7;
+    --text_navbar: #000;
     --border_main: #fff;
     --border_contadores: #ffff
 }
