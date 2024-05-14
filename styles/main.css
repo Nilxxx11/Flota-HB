@@ -32,7 +32,7 @@
   display: flex; /* Utilizar flexbox para colocar los contadores en línea */
   align-items: center; /* Alinear los contadores verticalmente */
   width: 90%;
-  margin-bottom: 2rem; /* Añadir margen inferior para separar de CRUD Container */
+  margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
   border: 1px solid var(--border_contadores);
   padding: 1rem 2rem;
   overflow: auto;
