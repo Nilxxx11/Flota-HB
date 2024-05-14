@@ -171,6 +171,9 @@ const handleFormSubmit = (e) => {
 const databaseRef = ref(getDatabase());
 
 // Función para renderizar los estudiantes en la tabla
+const itemsPerPage = 10; // Cantidad de registros por página
+let currentPage = 1; // Página actual
+
 const renderStudents = (students) => {
   const tbody = document.querySelector('tbody');
   tbody.innerHTML = '';
@@ -180,7 +183,12 @@ const renderStudents = (students) => {
   countWithGPS = 0;
   countWithCamera = 0;
 
-  Object.entries(students).forEach(([key, student]) => {
+  // Obtener los registros para la página actual
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const studentsToRender = Object.entries(students).slice(startIndex, endIndex);
+
+  studentsToRender.forEach(([key, student]) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${student.placa}</td>
@@ -189,33 +197,25 @@ const renderStudents = (students) => {
       <td>${student.camara}</td>
       <td>${student.fecha}</td>
       <td>
-
+        <button class="button is-warning is-dark is-small" data-key="${key}">E</button>
+        <button class="button is-danger is-dark is-small" data-key="${key}">X</button>
       </td>
     `;
     tbody.appendChild(tr);
-//        <button class="button is-warning is-dark is-small" data-key="${key}">E</button>
-// <button class="button is-danger is-dark is-small" data-key="${key}">X</button>
 
-    // Contar placas con Rif
-    if (student.rif === 'si') {
-      countWithRif++;
-    }
-
-    // Contar placas con GPS
-    if (student.gps === 'si') {
-      countWithGPS++;
-    }
-
-    // Contar placas con cámara
-    if (student.camara === 'si') {
-      countWithCamera++;
-    }
+    // Contar placas con Rif, GPS y cámara
+    if (student.rif === 'si') countWithRif++;
+    if (student.gps === 'si') countWithGPS++;
+    if (student.camara === 'si') countWithCamera++;
   });
 
-  // Mostrar los contadores en algún lugar de tu interfaz
+  // Mostrar los contadores
   document.getElementById('rif-counter').innerText = `Con Rif: ${countWithRif}`;
   document.getElementById('gps-counter').innerText = `Con GPS: ${countWithGPS}`;
   document.getElementById('camera-counter').innerText = `Con Cámara: ${countWithCamera}`;
+
+  // Renderizar los controles de paginación
+  renderPagination(students);
 };
 
 // Función para filtrar estudiantes por nombre
