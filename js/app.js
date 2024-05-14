@@ -35,37 +35,28 @@ cancel.addEventListener("click", showRegisterModal);
 const handleEditStudent = (key) => {
   const studentRef = ref(getDatabase(), `/${key}`);
 
-  try {
-    // Obtener datos del estudiante una vez
-    get(studentRef)
-      .then((snapshot) => {
-        const student = snapshot.val();
+  // Obtener datos del estudiante una vez
+  get(studentRef)
+    .then((snapshot) => {
+      const student = snapshot.val();
 
-        // Verificar si se obtuvieron los datos correctamente
-        if (student) {
-          // Precargar los campos del formulario con los datos del estudiante
-          form['placa'].value = student.placa;
-          form['rif'].value = student.rif;
-          form['gps'].value = student.gps;
-          form['camara'].value = student.camara;
-          form['fecha'].value = student.fecha;
-          form['detalles'].value = student.detalles;
+      // Precargar los campos del formulario con los datos del estudiante
+      form['placa'].value = student.placa;
+      form['rif'].value = student.rif;
+      form['gps'].value = student.gps;
+      form['camara'].value = student.camara;
+      form['fecha'].value = student.fecha;
+      form['detalles'].value = student.detalles;
 
-          // Asignar la clave del registro que se está editando
-          editKey = key;
+      // Asignar la clave del registro que se está editando
+      editKey = key;
 
-          // Mostrar el modal
-          modal.classList.add('is-active');
-        } else {
-          console.error('No se encontraron datos para el estudiante con la clave:', key);
-        }
-      })
-      .catch((error) => {
-        console.error('Error al obtener datos del estudiante: ', error);
-      });
-  } catch (error) {
-    console.error('Error al obtener datos del estudiante:', error);
-  }
+      // Mostrar el modal
+      modal.classList.add('is-active');
+    })
+    .catch((error) => {
+      console.error('Error al obtener datos del estudiante: ', error);
+    });
 };
 
 // Función para manejar la eliminación de estudiantes
