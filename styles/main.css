@@ -49,6 +49,7 @@
 
 .crud-container {
   width: 100%; /* Cambiar el ancho al 100% para ocupar toda la línea */
+  height: 80%;
   margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
   border: 1px solid var(--border_main);
   padding: 1rem 2rem;
