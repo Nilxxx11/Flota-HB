@@ -16,7 +16,7 @@
 }
 /* LOGO */
 .navbar-logo {
-  max-height: 3rem; /* Ajusta el tamaño de la imagen según sea necesario */
+  max-height: 5rem; /* Ajusta el tamaño de la imagen según sea necesario */
   margin-right: 1rem; /* Espacio entre la imagen y el texto */
 }
 
