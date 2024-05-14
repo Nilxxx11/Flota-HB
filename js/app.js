@@ -123,23 +123,38 @@ const handleFormSubmit = (e) => {
         console.error('Error al actualizar estudiante: ', error);
       });
   } else {
-    // Agregar un nuevo registro a Firebase
-    push(ref(getDatabase(), '/'), estudiante)
-      .then(() => {
-        console.log('Estudiante añadido correctamente');
-        // Cerrar el modal
-        modal.classList.remove('is-active');
-        // Obtener el snapshot actualizado de los estudiantes y renderizar la tabla
-        getStudentsSnapshot()
-          .then((students) => {
-            renderStudents(students);
-          })
-          .catch((error) => {
-            console.error('Error al obtener estudiantes: ', error);
-          });
+    // Verificar si la placa ya está registrada
+    const databaseRef = ref(getDatabase(), '/');
+    get(databaseRef)
+      .then((snapshot) => {
+        const data = snapshot.val();
+        const placasExistentes = data ? Object.values(data).map(item => item.placa) : [];
+        
+        if (placasExistentes.includes(placa)) {
+          alert('Esta placa ya está registrada.');
+        } else {
+          // Agregar un nuevo registro a Firebase
+          push(databaseRef, estudiante)
+            .then(() => {
+              console.log('Estudiante añadido correctamente');
+              // Cerrar el modal
+              modal.classList.remove('is-active');
+              // Obtener el snapshot actualizado de los estudiantes y renderizar la tabla
+              getStudentsSnapshot()
+                .then((students) => {
+                  renderStudents(students);
+                })
+                .catch((error) => {
+                  console.error('Error al obtener estudiantes: ', error);
+                });
+            })
+            .catch((error) => {
+              console.error('Error al añadir estudiante: ', error);
+            });
+        }
       })
       .catch((error) => {
-        console.error('Error al añadir estudiante: ', error);
+        console.error('Error al verificar la placa: ', error);
       });
   }
 };
@@ -193,7 +208,6 @@ const renderStudents = (students) => {
   document.getElementById('gps-counter').innerText = `Con GPS: ${countWithGPS}`;
   document.getElementById('camera-counter').innerText = `Con Cámara: ${countWithCamera}`;
 };
-
 
 // Función para filtrar estudiantes por nombre
 const filterStudentsByPlaca = (students, searchText) => {
@@ -251,13 +265,15 @@ document.querySelector('tbody').addEventListener('click', (e) => {
   }
 });
 
-//Escuchar cambios en la base de datos
+// Escuchar cambios en la base de datos
 getStudentsSnapshot().then((students) => {
-renderStudents(students);
+  renderStudents(students);
 }).catch((error) => {
-console.error('Error al obtener estudiantes: ', error);
+  console.error('Error al obtener estudiantes: ', error);
 });
+
 // Esperar a que se cargue el DOM
 document.addEventListener('DOMContentLoaded', () => {
-form.addEventListener('submit', handleFormSubmit);
+  form.addEventListener('submit', handleFormSubmit);
 });
+
