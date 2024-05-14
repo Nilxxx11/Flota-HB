@@ -1,152 +1,115 @@
-/* Se importa Bulma */
+/* Importar Bulma */
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css";
-/* HEADER */
-:root{
-    --navbar: #ffff;
-    --text_navbar: #000;
-    --border_main: #fff;
-    --border_contadores: #ffff
+
+/* Estilos generales */
+:root {
+  --navbar: #fff;
+  --text-navbar: #000;
+  --border-main: #fff;
+  --border-contadores: #fff;
 }
+
+/* Estilos para pantallas grandes (computadoras) */
 .navbar {
   background-color: var(--navbar);
 }
+
 .navbar-item {
-  color: var(--text_navbar);
+  color: var(--text-navbar);
   font-weight: bold;
 }
-/* LOGO */
+
 .navbar-logo {
-  max-height: 5rem; /* Ajusta el tamaño de la imagen según sea necesario */
-  margin-right: 1rem; /* Espacio entre la imagen y el texto */
+  max-height: 5rem;
+  margin-right: 1rem;
 }
-/* MAIN */
+
 .main-content {
-  height: 50vh;
+  height: 70vh;
   display: flex;
-  flex-direction: column; /* Organizar elementos en columnas */
-  align-items: center; /* Alinear elementos en el centro horizontalmente */
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
+
 .contadores {
-  display: flex; /* Utilizar flexbox para colocar los contadores en línea */
-  align-items: center; /* Alinear los contadores verticalmente */
+  display: flex;
+  align-items: center;
   width: 90%;
-  margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
-  border: 1px solid var(--border_contadores);
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-contadores);
   padding: 1rem 2rem;
   overflow: auto;
-  box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
+  box-shadow: 0 0 1rem 0 rgba(25, 21, 0, 0.3);
   border-radius: 1rem;
 }
 
 #rif-counter,
 #gps-counter,
 #camera-counter {
-  flex: 2; /* Que cada contador ocupe el mismo ancho */
-  margin: 0; /* Eliminar el margen para evitar espacios innecesarios */
+  flex: 1;
+  margin: 0;
 }
+
 .crud-container {
   display: flex;
   flex-direction: column;
   height: 100%;
- /* max-height: 90vh; Establece una altura máxima del 70% de la altura de la ventana del navegador */
-  /*overflow: auto; Agrega barras de desplazamiento si el contenido excede la altura máxima */
-  width: 100%; /* Cambiar el ancho al 100% para ocupar toda la línea */
-  margin-bottom: 101rem; /* Añadir margen inferior para separar de CRUD Container */
-  border: 1px solid var(--border_main);
-  padding: 1rem 80rem;
-  box-shadow: 0 0 1rem 0 rgba(25.21.0.0.3);
+  width: 100%;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-main);
+  padding: 1rem 2rem;
+  box-shadow: 0 0 1rem 0 rgba(25, 21, 0, 0.3);
   border-radius: 1rem;
 }
 
-.crud-header{
-  flex-shrink: 0; /* Evita que el encabezado se encoja */
+.crud-header {
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   padding: 0 2rem 1rem 2rem;
   border-bottom: 1px solid;
 }
 
+/* Estilos para pantallas pequeñas (dispositivos móviles) */
+@media (max-width: 768px) {
+  .main-content {
+    height: auto;
+    padding: 1rem;
+  }
+
+  .contadores {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+
+  #rif-counter,
+  #gps-counter,
+  #camera-counter {
+    flex: 0 0 50%;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .crud-container {
+    padding: 0.5rem;
+  }
+
+  .crud-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 1rem 0;
+  }
+
+  .crud-header button {
+    margin-top: 1rem;
+  }
+}
+
 /* Estilos para la tabla */
-.table {
-  margin-bottom: 100rem;
-  height: 100%;
-  width: 100%; /* Asegura que la tabla ocupe todo el ancho disponible */
-  border-collapse: collapse; /* Elimina el espacio entre las celdas */
-}
-}
+/* ... (estilos para la tabla) ... */
 
-.table th,
-.table td {
-  padding: 0.75rem;
-  vertical-align: top;
-  border-top: 1px solid #dee2e6;
-}
-
-.table thead th {
-  vertical-align: bottom;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.table tbody + tbody {
-  border-top: 2px solid #dee2e6;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-.table-wrapper {
-  flex-grow: 5; /* Permite que el contenedor de la tabla crezca y ocupe todo el espacio disponible */
- overflow: auto;/*Agrega barras de desplazamiento si la tabla excede el tamaño del contenedor */
-}
 /* Estilos para la paginación */
-.pagination-container {
-  margin-top: 1rem;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.pagination-previous,
-.pagination-next {
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.25rem;
-  background-color: #f5f5f5;
-  color: #333;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.pagination-previous:hover,
-.pagination-next:hover {
-  background-color: #e9e9e9;
-}
-
-.pagination-list {
-  display: flex;
-  list-style: none;
-  margin: 0 0.5rem;
-  padding: 0;
-}
-
-.pagination-link {
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.25rem;
-  background-color: #f5f5f5;
-  color: #333;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-  margin: 0 0.25rem;
-}
-
-.pagination-link:hover {
-  background-color: #e9e9e9;
-}
-
-.pagination-link.is-current {
-  background-color: #3273dc;
-  color: #fff;
-}
+/* ... (estilos para la paginación) ... */
