@@ -46,6 +46,9 @@
   margin: 0; /* Eliminar el margen para evitar espacios innecesarios */
 }
 .crud-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   max-height: 90vh; /* Establece una altura máxima del 70% de la altura de la ventana del navegador */
   overflow: auto;/* Agrega barras de desplazamiento si el contenido excede la altura máxima */
   width: 100%; /* Cambiar el ancho al 100% para ocupar toda la línea */
