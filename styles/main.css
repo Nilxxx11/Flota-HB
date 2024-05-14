@@ -65,9 +65,10 @@
 
 /* Estilos para la tabla */
 .table {
-  width: 100%;
-  border-collapse: collapse;
   margin-bottom: 1rem;
+  width: 100%; /* Asegura que la tabla ocupe todo el ancho disponible */
+  border-collapse: collapse; /* Elimina el espacio entre las celdas */
+}
 }
 
 .table th,
