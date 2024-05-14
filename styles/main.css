@@ -47,6 +47,8 @@
 }
 
 .crud-container {
+  max-height: 70vh; /* Establece una altura máxima del 70% de la altura de la ventana del navegador */
+  overflow: auto; /* Agrega barras de desplazamiento si el contenido excede la altura máxima */
   width: 100%; /* Cambiar el ancho al 100% para ocupar toda la línea */
   margin-bottom: 1rem; /* Añadir margen inferior para separar de CRUD Container */
   border: 1px solid var(--border_main);
