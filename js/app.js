@@ -171,7 +171,7 @@ const handleFormSubmit = (e) => {
 const databaseRef = ref(getDatabase());
 
 // Función para renderizar los estudiantes en la tabla
-const itemsPerPage = 10; // Cantidad de registros por página
+const itemsPerPage = 20; // Cantidad de registros por página
 let currentPage = 1; // Página actual
 
 const renderStudents = (students) => {
