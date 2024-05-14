@@ -193,6 +193,8 @@ const renderStudents = (students) => {
       </td>
     `;
     tbody.appendChild(tr);
+//        <button class="button is-warning is-dark is-small" data-key="${key}">E</button>
+// <button class="button is-danger is-dark is-small" data-key="${key}">X</button>
 
     // Contar placas con Rif
     if (student.rif === 'si') {
