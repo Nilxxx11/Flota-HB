@@ -217,6 +217,66 @@ const renderStudents = (students) => {
   // Renderizar los controles de paginación
   renderPagination(students);
 };
+const renderPagination = (students) => {
+  const totalPages = Math.ceil(Object.keys(students).length / itemsPerPage);
+  const paginationContainer = document.createElement('div');
+  paginationContainer.classList.add('pagination', 'is-centered');
+
+  const prevButton = document.createElement('a');
+  prevButton.classList.add('pagination-previous');
+  prevButton.setAttribute('aria-label', 'Página anterior');
+  prevButton.innerHTML = '&laquo;';
+  if (currentPage === 1) {
+    prevButton.classList.add('is-disabled');
+  } else {
+    prevButton.addEventListener('click', () => {
+      currentPage--;
+      renderStudents(students);
+    });
+  }
+  paginationContainer.appendChild(prevButton);
+
+  const pageNumbers = document.createElement('ul');
+  pageNumbers.classList.add('pagination-list');
+  for (let i = 1; i <= totalPages; i++) {
+    const pageItem = document.createElement('li');
+    const pageLink = document.createElement('a');
+    pageLink.classList.add('pagination-link');
+    pageLink.setAttribute('aria-label', `Ir a la página ${i}`);
+    pageLink.textContent = i;
+    if (i === currentPage) {
+      pageLink.classList.add('is-current');
+    } else {
+      pageLink.addEventListener('click', () => {
+        currentPage = i;
+        renderStudents(students);
+      });
+    }
+    pageItem.appendChild(pageLink);
+    pageNumbers.appendChild(pageItem);
+  }
+  paginationContainer.appendChild(pageNumbers);
+
+  const nextButton = document.createElement('a');
+  nextButton.classList.add('pagination-next');
+  nextButton.setAttribute('aria-label', 'Página siguiente');
+  nextButton.innerHTML = '&raquo;';
+  if (currentPage === totalPages) {
+    nextButton.classList.add('is-disabled');
+  } else {
+    nextButton.addEventListener('click', () => {
+      currentPage++;
+      renderStudents(students);
+    });
+  }
+  paginationContainer.appendChild(nextButton);
+
+  const tableContainer = document.querySelector('.crud-container');
+  const paginationDiv = document.createElement('div');
+  paginationDiv.classList.add('pagination-container');
+  paginationDiv.appendChild(paginationContainer);
+  tableContainer.appendChild(paginationDiv);
+};
 
 // Función para filtrar estudiantes por nombre
 const filterStudentsByPlaca = (students, searchText) => {
