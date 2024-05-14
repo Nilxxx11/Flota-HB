@@ -45,7 +45,6 @@
   flex: 2; /* Que cada contador ocupe el mismo ancho */
   margin: 0; /* Eliminar el margen para evitar espacios innecesarios */
 }
-
 .crud-container {
   max-height: 90vh; /* Establece una altura máxima del 70% de la altura de la ventana del navegador */
   overflow: auto;/* Agrega barras de desplazamiento si el contenido excede la altura máxima */
@@ -90,7 +89,10 @@
 .table-striped tbody tr:nth-of-type(odd) {
   background-color: rgba(0, 0, 0, 0.05);
 }
-
+.table-wrapper {
+  flex-grow: 1; /* Permite que el contenedor de la tabla crezca y ocupe todo el espacio disponible */
+  overflow: auto; /* Agrega barras de desplazamiento si la tabla excede el tamaño del contenedor */
+}
 /* Estilos para la paginación */
 .pagination-container {
   margin-top: 1rem;
