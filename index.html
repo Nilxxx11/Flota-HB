@@ -1,74 +1,79 @@
 <!doctype html>
 <html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles/main.css" type="text/css" media="all" />
-  <title>HB Y CIA S.A.S</title>
-</head>
-<body>
-<header>
-  <link rel="icon" href="data:;base64,=">
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/">
-        <img src="hb.png" alt="Logo" class="navbar-logo">
-        Avanzamos contigo
-      </a>
-    </div>
-  </nav>
-</header>
-
-  <main class="main-content">
-    <div class="contadores">
-      <span class="tag is-link is-normall" id="rif-counter">Con Rif: 0</span>
-      <span class="tag is-link is-normall" id="gps-counter">Con GPS: 0</span>
-      <span class="tag is-link is-normall" id="camera-counter">Con Cámara: 0</span>
-    </div>
-    <div class="crud-container">
-      <div class="crud-header">
-        <h1>Flota</h1>
-        <button class="button is-success is-dark" id="nuevo">Agregar</button>
-        <div class="field has-addons">
-          <div class="control">
-            <input class="input" type="text" placeholder="Buscar por placa" id="search-input">
-          </div>
-          <div class="control">
-            <button class="button is-info" id="search-button">
-              Buscar
-            </button>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/main.css" type="text/css" media="all" />
+    <title>HB Y CIA S.A.S</title>
+  </head>
+  <body>
+    <header>
+      <link rel="icon" href="data:;base64,=">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="hb.png" alt="Logo" class="navbar-logo">
+            Avanzamos contigo
+          </a>
+        </div>
+      </nav>
+    </header>
+    <main class="main-content">
+      <div class="contadores">
+        <span class="tag is-link is-normall" id="rif-counter">Con Rif: 0</span>
+        <span class="tag is-link is-normall" id="gps-counter">Con GPS: 0</span>
+        <span class="tag is-link is-normall" id="camera-counter">Con Cámara: 0</span>
+      </div>
+      <div class="crud-container">
+        <div class="crud-header">
+          <h1>Flota</h1>
+          <button class="button is-success is-dark" id="nuevo">Agregar</button>
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" type="text" placeholder="Buscar por placa" id="search-input">
+            </div>
+            <div class="control">
+              <button class="button is-info" id="search-button">
+                Buscar
+              </button>
+            </div>
           </div>
         </div>
+        <div class="table-responsive">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>RIF</th>
+                <th>GPS</th>
+                <th>CAMARA</th>
+                <th class="is-hidden-mobile">última revisión</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="is-size-7-mobile"></td>
+                <td class="is-size-7-mobile"></td>
+                <td class="is-size-7-mobile"></td>
+                <td class="is-size-7-mobile"></td>
+                <td class="is-size-7-mobile is-hidden-mobile"></td>
+                <td>
+                  <button class="button is-warning is-dark is-small">E</button>
+                  <button class="button is-danger is-dark is-small">X</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-<div class="table-wrapper">
-        <table class="table">
-        <thead>
-          <tr>
-            <th>Placa</th>
-            <th>RIF</th>
-            <th>GPS</th>
-            <th>CAMARA</th>
-            <th>última revisión</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <button class="button is-warning is-dark is-small">E</button>
-              <button class="button is-danger is-dark is-small">X</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-</div>
-    </div>
-  </main>
+    </main>
+    <!-- Resto del código -->
+  </body>
+</html>
+  
+  
+  // aqui
   <div class="modal" id="modal">
     <div class="modal-background"></div>
     <div class="modal-card">
