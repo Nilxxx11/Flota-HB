@@ -38,10 +38,10 @@ const handleEditStudent = (key) => {
   // Obtener datos del estudiante una vez
   get(studentRef)
     .then((snapshot) => {
-      const student = snapshot.val();
+      // Verificar si el snapshot no está vacío
+      if (snapshot.exists()) {
+        const student = snapshot.val();
 
-      // Verificar si se obtuvieron los datos correctamente
-      if (student) {
         // Precargar los campos del formulario con los datos del estudiante
         form['placa'].value = student.placa;
         form['rif'].value = student.rif;
