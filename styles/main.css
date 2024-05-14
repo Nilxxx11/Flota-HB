@@ -95,7 +95,7 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 .table-wrapper {
-  flex-grow: 1; /* Permite que el contenedor de la tabla crezca y ocupe todo el espacio disponible */
+  flex-grow: 5; /* Permite que el contenedor de la tabla crezca y ocupe todo el espacio disponible */
  overflow: auto;Agrega barras de desplazamiento si la tabla excede el tamaño del contenedor */
 }
 /* Estilos para la paginación */
