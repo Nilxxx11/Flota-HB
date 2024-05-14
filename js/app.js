@@ -218,6 +218,12 @@ const renderStudents = (students) => {
   renderPagination(students);
 };
 const renderPagination = (students) => {
+  // Eliminar los controles de paginación existentes
+  const existingPagination = document.querySelector('.pagination-container');
+  if (existingPagination) {
+    existingPagination.remove();
+  }
+
   const totalPages = Math.ceil(Object.keys(students).length / itemsPerPage);
   const paginationContainer = document.createElement('div');
   paginationContainer.classList.add('pagination', 'is-centered');
