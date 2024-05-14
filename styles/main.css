@@ -69,7 +69,7 @@
 
 /* Estilos para la tabla */
 .table {
-  margin-bottom: 10rem;
+  margin-bottom: 100rem;
   height: 100%;
   width: 100%; /* Asegura que la tabla ocupe todo el ancho disponible */
   border-collapse: collapse; /* Elimina el espacio entre las celdas */
