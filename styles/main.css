@@ -19,7 +19,6 @@
   max-height: 5rem; /* Ajusta el tamaño de la imagen según sea necesario */
   margin-right: 1rem; /* Espacio entre la imagen y el texto */
 }
-
 /* MAIN */
 .main-content {
   height: 50vh;
@@ -62,4 +61,31 @@
   justify-content: space-between;
   padding: 0 2rem 1rem 2rem;
   border-bottom: 1px solid;
+}
+
+/* Estilos para la tabla */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
 }
