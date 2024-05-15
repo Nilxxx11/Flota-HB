@@ -35,9 +35,10 @@
 .counter-container {
     position: sticky;
     top: 0;
-    background-color: #fff; /* Ajusta el color de fondo según tus necesidades */
+    /*background-color: #fff; Ajusta el color de fondo según tus necesidades */
     padding: 10px 0; /* Ajusta el espaciado según tus necesidades */
     z-index: 1; /* Asegura que el contenedor esté por encima de la tabla */
+    margin-top: 20px;
 }
 
 .contadores {
