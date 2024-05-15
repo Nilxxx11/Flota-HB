@@ -32,16 +32,18 @@
   justify-content: center;
 }
 
+.counter-container {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Ajusta el color de fondo según tus necesidades */
+    padding: 10px 0; /* Ajusta el espaciado según tus necesidades */
+    z-index: 1; /* Asegura que el contenedor esté por encima de la tabla */
+}
+
 .contadores {
-  display: flex;
-  align-items: center;
-  width: 90%;
-  margin-bottom: 1rem;
-  border: 1px solid var(--border-contadores);
-  padding: 1rem 2rem;
-  overflow: auto;
-  box-shadow: 0 0 1rem 0 rgba(25, 21, 0, 0.3);
-  border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Ajusta el espacio entre los contadores según tus necesidades */
 }
 
 #rif-counter,
