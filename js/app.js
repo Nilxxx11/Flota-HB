@@ -196,6 +196,7 @@ const renderStudents = (students) => {
       <td>${student.gps}</td>
       <td>${student.camara}</td>
       <td>${student.fecha}</td>
+      <td>${student.detalles}</td>
       <td>
 
       </td>
