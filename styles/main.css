@@ -120,6 +120,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1rem;
+  background-color: var(#005143);
 }
 
 .table th,
