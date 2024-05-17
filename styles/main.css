@@ -9,8 +9,8 @@
   --border-contadores: #fff;
   --fondo: #220da6;
   --texto: #fff;
-  --tabla-fondo: #e0e0e0; /* Color de fondo para la tabla */
-  --tabla-celda: #f5f5f5; /* Color de fondo para las celdas */
+  --tabla-fondo: #007f00; /* Color de fondo para la tabla */
+  --tabla-celda: #007f00; /* Color de fondo para las celdas */
   --tabla-header: #333; /* Color de fondo para los encabezados */
   --tabla-texto: #000; /* Color del texto de la tabla */
 }
