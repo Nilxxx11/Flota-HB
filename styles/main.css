@@ -7,12 +7,12 @@
   --text-navbar: #000;
   --border-main: #fff;
   --border-contadores: #fff;
-  --fondo: #220da6;
+  --fondo: #000022;
   --texto: #fff;
-  --tabla-fondo: #007f00; /* Color de fondo para la tabla */
-  --tabla-celda: #007f00; /* Color de fondo para las celdas */
-  --tabla-header: #333; /* Color de fondo para los encabezados */
-  --tabla-texto: #000; /* Color del texto de la tabla */
+  --tabla-fondo: #02005c; /* Color de fondo para la tabla */
+  --tabla-celda: #02005c; /* Color de fondo para las celdas */
+  --tabla-header: #fff; /* Color de fondo para los encabezados */
+  --tabla-texto: #fff; /* Color del texto de la tabla */
 }
 
 /* Estilos para pantallas grandes (computadoras) */
