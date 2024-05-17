@@ -25,6 +25,7 @@
 }
 
 .main-content {
+  background-color: #220da6;
   height: 70vh;
   display: flex;
   flex-direction: column;
