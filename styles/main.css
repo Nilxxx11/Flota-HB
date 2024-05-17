@@ -7,6 +7,8 @@
   --text-navbar: #000;
   --border-main: #fff;
   --border-contadores: #fff;
+  --fondo: #220da6;
+  --texto: #fff;
 }
 
 /* Estilos para pantallas grandes (computadoras) */
@@ -25,7 +27,8 @@
 }
 
 .main-content {
-  background-color: #220da6;
+  background-color: var(--fondo);
+  color: var(--texto) ; 
   height: 70vh;
   display: flex;
   flex-direction: column;
