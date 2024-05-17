@@ -188,10 +188,10 @@ const renderStudents = (students) => {
             <td>${student.fecha}</td>
             <td>${student.detalles}</td>
             <td>
-                        <button class="button is-warning is-dark is-small" data-key="${key}">E</button>
+                        
 
             </td>
-        `;
+        `;      //<button class="button is-warning is-dark is-small" data-key="${key}">E</button>
                 //<button class="button is-danger is-dark is-small" data-key="${key}">X</button>
         tbody.appendChild(tr);
 
