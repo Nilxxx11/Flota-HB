@@ -2,9 +2,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
-// Importar SheetJS para exportación a Excel
-import * as XLSX from 'https://cdn.sheetjs.com/xlsx-0.20.1/xlsx.mjs';
-
 // Constantes con los id de los botones y modal
 const openModal = document.getElementById('nuevo');
 const modal = document.getElementById('modal');
@@ -14,37 +11,8 @@ const form = document.getElementById('register-form');
 let countWithRif = 0;
 let countWithGPS = 0;
 let countWithCamera = 0;
-
 // Variable global para almacenar la clave del registro que se está editando
 let editKey = null;
-
-// Función para exportar a Excel
-const exportToExcel = () => {
-    // Obtener todos los estudiantes del snapshot
-    const students = studentsSnapshot;
-
-    // Convertir el objeto de estudiantes a un array
-    const data = Object.values(students).map(student => ({
-        'Placa': student.placa,
-        'RIF': student.rif,
-        'GPS': student.gps,
-        'Cámara': student.camara,
-        'Última Revisión': student.fecha,
-        'Detalles': student.detalles
-    }));
-
-    // Crear un nuevo libro de trabajo
-    const workbook = XLSX.utils.book_new();
-    
-    // Convertir los datos a una hoja de cálculo
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    
-    // Agregar la hoja al libro de trabajo
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Flota');
-    
-    // Generar y descargar el archivo Excel
-    XLSX.writeFile(workbook, 'flota_' + new Date().toISOString().split('T')[0] + '.xlsx');
-};
 
 // Función para mostrar modal
 const showRegisterModal = () => {
@@ -59,10 +27,7 @@ const showRegisterModal = () => {
 // Detecta los click a los botones y llaman a la función
 openModal.addEventListener("click", showRegisterModal);
 cancel.addEventListener("click", showRegisterModal);
-// Agregar event listener al botón de exportación
-exportExcelButton.addEventListener('click', exportToExcel);
 
-// 
 
 // Función para manejar la edición de estudiantes
 const handleEditStudent = (key) => {
@@ -273,7 +238,44 @@ const getStudentsSnapshot = () => {
        });
    });
 };
-
+// Función para exportar a Excel
+const exportToExcel = () => {
+    // Verificar si XLSX está disponible globalmente
+    if (typeof XLSX === 'undefined') {
+        // Cargar dinámicamente la biblioteca
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js';
+        script.onload = () => performExport();
+        document.head.appendChild(script);
+    } else {
+        performExport();
+    }
+function performExport() {
+        // Obtener todos los estudiantes del snapshot
+        const students = studentsSnapshot;
+        
+        // Convertir el objeto de estudiantes a un array
+        const data = Object.values(students).map(student => ({
+            'Placa': student.placa,
+            'RIF': student.rif,
+            'GPS': student.gps,
+            'Cámara': student.camara,
+            'Última Revisión': student.fecha,
+            'Detalles': student.detalles
+        }));
+    // Crear un nuevo libro de trabajo
+        const workbook = XLSX.utils.book_new();
+        
+        // Convertir los datos a una hoja de cálculo
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        
+        // Agregar la hoja al libro de trabajo
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Flota');
+        
+        // Generar y descargar el archivo Excel
+        XLSX.writeFile(workbook, 'flota_' + new Date().toISOString().split('T')[0] + '.xlsx');
+    }
+};
 // Obtener referencias a los elementos del DOM
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
@@ -310,4 +312,9 @@ getStudentsSnapshot().then((students) => {
 // Esperar a que se cargue el DOM
 document.addEventListener('DOMContentLoaded', () => {
    form.addEventListener('submit', handleFormSubmit);
+    // Agregar event listener al botón de exportación
+    const exportExcelButton = document.getElementById('export-excel');
+    if (exportExcelButton) {
+        exportExcelButton.addEventListener('click', exportToExcel);
+    }
 });
