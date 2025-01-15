@@ -81,12 +81,7 @@ const handleFormSubmit = (e) => {
 // Función para renderizar los vehículos en la tabla
 const renderStudents = (students) => {
     tbody.innerHTML = '';
-    let countWithRif = 0, countWithGPS = 0, countWithCamera = 0, countWithKilometraje = 0, countWithoutKilometraje = 0;
-
-    if (!students || Object.keys(students).length === 0) {
-        updateCounters(countWithRif, countWithGPS, countWithCamera, countWithKilometraje, countWithoutKilometraje);
-        return;
-    }
+    if (!students || Object.keys(students).length === 0) return;
 
     Object.entries(students).forEach(([key, student]) => {
         const tr = document.createElement('tr');
@@ -105,50 +100,35 @@ const renderStudents = (students) => {
         `;
         tbody.appendChild(tr);
 
-        if (student.rif === 'si') countWithRif++;
-        if (student.gps === 'si') countWithGPS++;
-        if (student.camara === 'si') countWithCamera++;
-        if (student.kilometraje && student.kilometraje !== "") {
-            countWithKilometraje++;
-        } else {
-            countWithoutKilometraje++;
-        }
+        tbody.addEventListener('click', (e) => {
+            const key = e.target.getAttribute('data-key');
+            if (e.target.classList.contains('is-warning')) {
+                editKey = key;
+                const student = students[key];
+                form['placa'].value = student.placa;
+                form['rif'].value = student.rif;
+                form['gps'].value = student.gps;
+                form['camara'].value = student.camara;
+                form['kilometraje'].value = student.kilometraje;
+                form['detalles'].value = student.detalles;
+                modal.classList.add('is-active');
+            }
+            if (e.target.classList.contains('is-danger')) {
+                remove(ref(database, `/${key}`))
+                    .then(() => console.log('Vehículo eliminado correctamente'))
+                    .catch(console.error);
+            }
+        });
     });
-
-    updateCounters(countWithRif, countWithGPS, countWithCamera, countWithKilometraje, countWithoutKilometraje);
-
-    tbody.addEventListener('click', (e) => {
-        const key = e.target.getAttribute('data-key');
-        if (e.target.classList.contains('is-warning')) {
-            editKey = key;
-            const student = students[key];
-            form['placa'].value = student.placa;
-            form['rif'].value = student.rif;
-            form['gps'].value = student.gps;
-            form['camara'].value = student.camara;
-            form['kilometraje'].value = student.kilometraje;
-            form['detalles'].value = student.detalles;
-            modal.classList.add('is-active');
-        }
-        if (e.target.classList.contains('is-danger')) {
-            remove(ref(database, `/${key}`))
-                .then(() => console.log('Vehículo eliminado correctamente'))
-                .catch(console.error);
-        }
-    });
-};
-
-// Función para actualizar los contadores
-const updateCounters = (rif, gps, camera, withKm, withoutKm) => {
-    document.getElementById('rif-counter').innerText = `Con Rif: ${rif}`;
-    document.getElementById('gps-counter').innerText = `Con GPS: ${gps}`;
-    document.getElementById('camera-counter').innerText = `Con Cámara: ${camera}`;
-    document.getElementById('with-kilometraje').innerText = `Con Kilometraje: ${withKm}`;
-    document.getElementById('without-kilometraje').innerText = `Sin Kilometraje: ${withoutKm}`;
 };
 
 // Función para exportar datos a Excel
 const exportToExcel = () => {
+    if (!allStudents || Object.keys(allStudents).length === 0) {
+        alert("No hay datos para exportar.");
+        return;
+    }
+
     const data = Object.values(allStudents);
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
