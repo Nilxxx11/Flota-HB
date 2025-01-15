@@ -1,6 +1,6 @@
 // Importar los módulos de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 // Configuración de Firebase (reemplaza con tus credenciales)
 const firebaseConfig = {
@@ -27,24 +27,19 @@ const searchButton = document.getElementById('search-button');
 const exportExcelButton = document.getElementById('export-excel');
 
 // Variables globales
-let countWithRif = 0;
-let countWithGPS = 0;
-let countWithCamera = 0;
-let countWithKilometraje = 0;
-let countWithoutKilometraje = 0;
-let editKey = null;
 let allStudents = {}; // Almacenará todos los datos de Firebase
+let editKey = null;
 
 // Función para mostrar/ocultar el modal
-const showRegisterModal = () => {
+const toggleModal = () => {
     form.reset();
     editKey = null;
     modal.classList.toggle('is-active');
 };
 
 // Event listeners para abrir/cerrar el modal
-openModal.addEventListener("click", showRegisterModal);
-cancel.addEventListener("click", showRegisterModal);
+openModal.addEventListener("click", toggleModal);
+cancel.addEventListener("click", toggleModal);
 
 // Función para manejar el envío del formulario
 const handleFormSubmit = (e) => {
@@ -76,26 +71,14 @@ const handleFormSubmit = (e) => {
                 console.log('Vehículo actualizado correctamente');
                 editKey = null;
                 modal.classList.remove('is-active');
-                loadStudents(); // Recargar los datos
             })
             .catch(console.error);
     } else {
         const databaseRef = ref(database, '/');
-        get(databaseRef)
-            .then((snapshot) => {
-                const data = snapshot.val();
-                const placasExistentes = data ? Object.values(data).map(item => item.placa) : [];
-                if (placasExistentes.includes(placa)) {
-                    alert('Esta placa ya está registrada.');
-                } else {
-                    push(databaseRef, estudiante)
-                        .then(() => {
-                            console.log('Vehículo añadido correctamente');
-                            modal.classList.remove('is-active');
-                            loadStudents(); // Recargar los datos
-                        })
-                        .catch(console.error);
-                }
+        push(databaseRef, estudiante)
+            .then(() => {
+                console.log('Vehículo añadido correctamente');
+                modal.classList.remove('is-active');
             })
             .catch(console.error);
     }
@@ -106,12 +89,10 @@ const renderStudents = (students) => {
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
 
-    // Reiniciar contadores
-    countWithRif = 0;
-    countWithGPS = 0;
-    countWithCamera = 0;
-    countWithKilometraje = 0;
-    countWithoutKilometraje = 0;
+    if (!students || Object.keys(students).length === 0) {
+        console.log('No hay datos para mostrar');
+        return;
+    }
 
     Object.entries(students).forEach(([key, student]) => {
         const tr = document.createElement('tr');
@@ -129,24 +110,28 @@ const renderStudents = (students) => {
             </td>
         `;
         tbody.appendChild(tr);
-
-        // Actualizar contadores
-        if (student.rif === 'si') countWithRif++;
-        if (student.gps === 'si') countWithGPS++;
-        if (student.camara === 'si') countWithCamera++;
-        if (student.kilometraje && student.kilometraje !== "") {
-            countWithKilometraje++;
-        } else {
-            countWithoutKilometraje++;
-        }
     });
 
-    // Mostrar contadores
-    document.getElementById('rif-counter').innerText = `Con Rif: ${countWithRif}`;
-    document.getElementById('gps-counter').innerText = `Con GPS: ${countWithGPS}`;
-    document.getElementById('camera-counter').innerText = `Con Cámara: ${countWithCamera}`;
-    document.getElementById('with-kilometraje').innerText = `Con Kilometraje: ${countWithKilometraje}`;
-    document.getElementById('without-kilometraje').innerText = `Sin Kilometraje: ${countWithoutKilometraje}`;
+    // Agregar eventos a los botones de edición y eliminación
+    tbody.addEventListener('click', (e) => {
+        const key = e.target.getAttribute('data-key');
+        if (e.target.classList.contains('is-warning')) {
+            editKey = key;
+            const student = students[key];
+            form['placa'].value = student.placa;
+            form['rif'].value = student.rif;
+            form['gps'].value = student.gps;
+            form['camara'].value = student.camara;
+            form['kilometraje'].value = student.kilometraje;
+            form['detalles'].value = student.detalles;
+            modal.classList.add('is-active');
+        }
+        if (e.target.classList.contains('is-danger')) {
+            remove(ref(database, `/${key}`))
+                .then(() => console.log('Vehículo eliminado correctamente'))
+                .catch(console.error);
+        }
+    });
 };
 
 // Función para cargar los datos de Firebase
@@ -154,8 +139,9 @@ const loadStudents = () => {
     const databaseRef = ref(database, '/');
     onValue(databaseRef, (snapshot) => {
         const data = snapshot.val();
+        console.log('Datos recuperados:', data);
         allStudents = data || {};
-        renderStudents(allStudents); // Renderizar todos los datos
+        renderStudents(allStudents);
     }, (error) => {
         console.error('Error al cargar los datos:', error);
     });
@@ -164,23 +150,16 @@ const loadStudents = () => {
 // Inicializar la aplicación
 document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', handleFormSubmit);
-    exportExcelButton.addEventListener('click', exportToExcel);
 
-    // Cargar todos los datos al iniciar
+    // Cargar los datos al iniciar
     loadStudents();
 
     // Buscar al hacer clic en el botón de búsqueda
     searchButton.addEventListener('click', () => {
-        const searchText = searchInput.value.trim();
-        if (searchText === "") {
-            // Si el campo de búsqueda está vacío, mostrar todos los datos
-            renderStudents(allStudents);
-        } else {
-            // Filtrar y mostrar solo los resultados que coincidan
-            const filteredStudents = Object.entries(allStudents)
-                .filter(([key, student]) => student.placa.toLowerCase().includes(searchText.toLowerCase()))
-                .reduce((acc, [key, student]) => ({ ...acc, [key]: student }), {});
-            renderStudents(filteredStudents);
-        }
+        const searchText = searchInput.value.trim().toLowerCase();
+        const filteredStudents = Object.entries(allStudents)
+            .filter(([_, student]) => student.placa.toLowerCase().includes(searchText))
+            .reduce((acc, [key, student]) => ({ ...acc, [key]: student }), {});
+        renderStudents(filteredStudents);
     });
 });
