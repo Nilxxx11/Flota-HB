@@ -1,92 +1,204 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/main.css" type="text/css" media="all" />
-    <!-- Bulma CSS -->
+    <meta name="description" content="Sistema de gestión de flota de vehículos - HB Y CIA S.A.S">
+    <title>Gestión de Flota | HB Y CIA S.A.S</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="hb.png">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <title>HB Y CIA S.A.S</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .navbar-brand img {
+            max-height: 40px;
+            margin-right: 1rem;
+        }
+        
+        .main-content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .counter-container {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .contadores {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .contadores .tag {
+            font-size: 1rem;
+            padding: 1em 1.5em;
+        }
+        
+        .crud-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .crud-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-right: auto;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .modal-card {
+            max-width: 600px;
+            width: 95%;
+        }
+        
+        .field:not(:last-child) {
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .crud-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .field.has-addons {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <link rel="icon" href="data:;base64,=">
         <nav class="navbar" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="/">
-                    <img src="hb.png" alt="Logo" class="navbar-logo">
-                    Avanzamos contigo
+                    <img src="hb.png" alt="HB Y CIA S.A.S Logo">
+                    <span class="has-text-weight-semibold">Avanzamos contigo</span>
                 </a>
             </div>
         </nav>
     </header>
+
     <main class="main-content">
         <div class="counter-container">
             <div class="contadores">
-                <span class="tag is-link is-normal" id="rif-counter">Con Rif: 0</span>
-                <span class="tag is-link is-normal" id="gps-counter">Con GPS: 0</span>
-                <span class="tag is-link is-normal" id="camera-counter">Con Cámara: 0</span>
-                <!-- Nuevos contadores -->
-                <span class="tag is-success is-normal" id="with-kilometraje">Con Kilometraje: 0</span>
-                <span class="tag is-danger is-normal" id="without-kilometraje">Sin Kilometraje: 0</span>
+                <span class="tag is-info is-medium" id="rif-counter">
+                    <i class="fas fa-file-contract mr-2"></i>Con RIF: 0
+                </span>
+                <span class="tag is-info is-medium" id="gps-counter">
+                    <i class="fas fa-satellite-dish mr-2"></i>Con GPS: 0
+                </span>
+                <span class="tag is-info is-medium" id="camera-counter">
+                    <i class="fas fa-video mr-2"></i>Con Cámara: 0
+                </span>
+                <span class="tag is-success is-medium" id="with-kilometraje">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Con Kilometraje: 0
+                </span>
+                <span class="tag is-danger is-medium" id="without-kilometraje">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Sin Kilometraje: 0
+                </span>
             </div>
         </div>
+
         <div class="crud-container">
             <div class="crud-header">
-                <h1>Flota</h1>
-                <button class="button is-primary" id="export-excel">Exportar a Excel</button>
-                <button class="button is-success is-dark" id="nuevo">Nuevo</button>
+                <h1 class="title">
+                    <i class="fas fa-truck mr-2"></i>Gestión de Flota
+                </h1>
+                <button class="button is-primary" id="export-excel">
+                    <i class="fas fa-file-excel mr-2"></i>Exportar a Excel
+                </button>
+                <button class="button is-success" id="nuevo">
+                    <i class="fas fa-plus mr-2"></i>Nuevo Vehículo
+                </button>
                 <div class="field has-addons">
-                    <div class="control">
+                    <div class="control has-icons-left">
                         <input class="input" type="text" placeholder="Buscar por placa" id="search-input">
+                        <span class="icon is-left">
+                            <i class="fas fa-search"></i>
+                        </span>
                     </div>
                     <div class="control">
                         <button class="button is-info" id="search-button">Buscar</button>
                     </div>
                 </div>
             </div>
+
             <div class="table-responsive">
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th>Placa</th>
-                            <th>RIF</th>
-                            <th>GPS</th>
-                            <th>CAMARA</th>
-                            <th>Kilometraje</th>
-                            <th class="is-hidden-mobile">Última Revisión</th>
-                            <th>Modelo</th>
-                            <th>Acciones</th>
+                            <th><i class="fas fa-car mr-2"></i>Placa</th>
+                            <th><i class="fas fa-file-contract mr-2"></i>RIF</th>
+                            <th><i class="fas fa-satellite-dish mr-2"></i>GPS</th>
+                            <th><i class="fas fa-video mr-2"></i>Cámara</th>
+                            <th><i class="fas fa-tachometer-alt mr-2"></i>Kilometraje</th>
+                            <th class="is-hidden-mobile"><i class="fas fa-calendar-check mr-2"></i>Última Revisión</th>
+                            <th><i class="fas fa-info-circle mr-2"></i>Modelo</th>
+                            <th><i class="fas fa-cogs mr-2"></i>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Las filas se generarán dinámicamente con JavaScript -->
+                        <!-- Dynamic content -->
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
 
-    <!-- Modal -->
     <div class="modal" id="modal">
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Nuevo Vehículo</p>
+                <p class="modal-card-title">
+                    <i class="fas fa-car mr-2"></i>Nuevo Vehículo
+                </p>
                 <button class="delete" id="cancel" aria-label="close"></button>
             </header>
             <section class="modal-card-body">
                 <form id="register-form">
                     <div class="field">
                         <label class="label">Placa</label>
-                        <div class="control">
-                            <input class="input" type="text" name="placa" required>
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" name="placa" required placeholder="Ej: ABC123">
+                            <span class="icon is-left">
+                                <i class="fas fa-car"></i>
+                            </span>
                         </div>
                     </div>
+
                     <div class="field">
                         <label class="label">RIF</label>
                         <div class="control">
-                            <div class="select">
+                            <div class="select is-fullwidth">
                                 <select name="rif" required>
                                     <option value="si">Sí</option>
                                     <option value="no">No</option>
@@ -94,10 +206,11 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="field">
                         <label class="label">GPS</label>
                         <div class="control">
-                            <div class="select">
+                            <div class="select is-fullwidth">
                                 <select name="gps" required>
                                     <option value="si">Sí</option>
                                     <option value="no">No</option>
@@ -105,10 +218,11 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="field">
                         <label class="label">Cámara</label>
                         <div class="control">
-                            <div class="select">
+                            <div class="select is-fullwidth">
                                 <select name="camara" required>
                                     <option value="si">Sí</option>
                                     <option value="no">No</option>
@@ -116,30 +230,38 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="field">
                         <label class="label">Kilometraje</label>
-                        <div class="control">
-                            <input class="input" type="number" name="kilometraje" required>
+                        <div class="control has-icons-left">
+                            <input class="input" type="number" name="kilometraje" required placeholder="Ej: 50000">
+                            <span class="icon is-left">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </span>
                         </div>
                     </div>
+
                     <div class="field">
                         <label class="label">Detalles</label>
                         <div class="control">
-                            <textarea class="textarea" name="detalles"></textarea>
+                            <textarea class="textarea" name="detalles" placeholder="Ingrese detalles adicionales del vehículo"></textarea>
                         </div>
                     </div>
-                    <footer class="modal-card-foot">
-                        <button type="submit" class="button is-success">Guardar</button>
-                        <button type="button" class="button" id="cancel">Cancelar</button>
-                    </footer>
                 </form>
             </section>
+            <footer class="modal-card-foot">
+                <button type="submit" form="register-form" class="button is-success">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
+                <button type="button" class="button" id="cancel">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+            </footer>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
-
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
