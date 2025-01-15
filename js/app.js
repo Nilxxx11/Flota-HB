@@ -164,7 +164,19 @@ const updateCounters = (rif, gps, camera, withKm, withoutKm) => {
     document.getElementById('with-kilometraje').innerText = `Con Kilometraje: ${withKm}`;
     document.getElementById('without-kilometraje').innerText = `Sin Kilometraje: ${withoutKm}`;
 };
+// Función para exportar datos a Excel
+const exportToExcel = () => {
+    if (!allStudents || Object.keys(allStudents).length === 0) {
+        alert("No hay datos para exportar.");
+        return;
+    }
 
+    const data = Object.values(allStudents);
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+    XLSX.writeFile(wb, 'Datos.xlsx');
+};
 // Función para cargar los datos de Firebase
 const loadStudents = () => {
     const databaseRef = ref(database, '/');
@@ -181,7 +193,7 @@ const loadStudents = () => {
 // Inicializar la aplicación
 document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', handleFormSubmit);
-
+    exportExcelButton.addEventListener('click', exportToExcel);
     // Cargar todos los datos al iniciar
     loadStudents();
 
