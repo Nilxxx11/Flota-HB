@@ -33,6 +33,7 @@ let countWithCamera = 0;
 let countWithKilometraje = 0;
 let countWithoutKilometraje = 0;
 let editKey = null;
+let allStudents = {}; // Almacenará todos los datos de Firebase
 
 // Función para mostrar/ocultar el modal
 const showRegisterModal = () => {
@@ -75,7 +76,7 @@ const handleFormSubmit = (e) => {
                 console.log('Vehículo actualizado correctamente');
                 editKey = null;
                 modal.classList.remove('is-active');
-                getStudentsSnapshot().then(renderStudents).catch(console.error);
+                loadStudents(); // Recargar los datos
             })
             .catch(console.error);
     } else {
@@ -91,7 +92,7 @@ const handleFormSubmit = (e) => {
                         .then(() => {
                             console.log('Vehículo añadido correctamente');
                             modal.classList.remove('is-active');
-                            getStudentsSnapshot().then(renderStudents).catch(console.error);
+                            loadStudents(); // Recargar los datos
                         })
                         .catch(console.error);
                 }
@@ -148,15 +149,15 @@ const renderStudents = (students) => {
     document.getElementById('without-kilometraje').innerText = `Sin Kilometraje: ${countWithoutKilometraje}`;
 };
 
-// Función para obtener los datos de Firebase
-const getStudentsSnapshot = () => {
-    return new Promise((resolve, reject) => {
-        onValue(ref(database, '/'), (snapshot) => {
-            const data = snapshot.val();
-            resolve(data || {});
-        }, (error) => {
-            reject(error);
-        });
+// Función para cargar los datos de Firebase
+const loadStudents = () => {
+    const databaseRef = ref(database, '/');
+    onValue(databaseRef, (snapshot) => {
+        const data = snapshot.val();
+        allStudents = data || {};
+        renderStudents(allStudents); // Renderizar todos los datos
+    }, (error) => {
+        console.error('Error al cargar los datos:', error);
     });
 };
 
@@ -164,17 +165,22 @@ const getStudentsSnapshot = () => {
 document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', handleFormSubmit);
     exportExcelButton.addEventListener('click', exportToExcel);
+
+    // Cargar todos los datos al iniciar
+    loadStudents();
+
+    // Buscar al hacer clic en el botón de búsqueda
     searchButton.addEventListener('click', () => {
         const searchText = searchInput.value.trim();
-        getStudentsSnapshot()
-            .then((students) => {
-                const filteredStudents = Object.entries(students)
-                    .filter(([key, student]) => student.placa.toLowerCase().includes(searchText.toLowerCase()))
-                    .reduce((acc, [key, student]) => ({ ...acc, [key]: student }), {});
-                renderStudents(filteredStudents);
-            })
-            .catch(console.error);
+        if (searchText === "") {
+            // Si el campo de búsqueda está vacío, mostrar todos los datos
+            renderStudents(allStudents);
+        } else {
+            // Filtrar y mostrar solo los resultados que coincidan
+            const filteredStudents = Object.entries(allStudents)
+                .filter(([key, student]) => student.placa.toLowerCase().includes(searchText.toLowerCase()))
+                .reduce((acc, [key, student]) => ({ ...acc, [key]: student }), {});
+            renderStudents(filteredStudents);
+        }
     });
-
-    getStudentsSnapshot().then(renderStudents).catch(console.error);
 });
