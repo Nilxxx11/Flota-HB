@@ -1,164 +1,143 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/main.css" type="text/css" media="all" />
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <title>HB Y CIA S.A.S</title>
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <link rel="icon" href="data:;base64,=">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="/">
-            <img src="hb.png" alt="Logo" class="navbar-logo">
-            Avanzamos contigo
-          </a>
-        </div>
-      </nav>
+        <link rel="icon" href="data:;base64,=">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <img src="hb.png" alt="Logo" class="navbar-logo">
+                    Avanzamos contigo
+                </a>
+            </div>
+        </nav>
     </header>
     <main class="main-content">
-<div class="counter-container">
-    <div class="contadores">
-        <span class="tag is-link is-normall" id="rif-counter">Con Rif: 0</span>
-        <span class="tag is-link is-normall" id="gps-counter">Con GPS: 0</span>
-        <span class="tag is-link is-normall" id="camera-counter">Con Cámara: 0</span>
-    </div>
-</div>
-      <div class="crud-container">
-        <div class="crud-header">
-          <h1>Flota</h1>
-          <button class="button is-primary" id="export-excel">Exportar a Excel</button>
-          <button class="button is-success is-dark" id="nuevo"></button>
-          <div class="field has-addons">
-            <div class="control">
-              <input class="input" type="text" placeholder="Buscar por placa" id="search-input">
+        <div class="counter-container">
+            <div class="contadores">
+                <span class="tag is-link is-normal" id="rif-counter">Con Rif: 0</span>
+                <span class="tag is-link is-normal" id="gps-counter">Con GPS: 0</span>
+                <span class="tag is-link is-normal" id="camera-counter">Con Cámara: 0</span>
+                <!-- Nuevos contadores -->
+                <span class="tag is-success is-normal" id="with-kilometraje">Con Kilometraje: 0</span>
+                <span class="tag is-danger is-normal" id="without-kilometraje">Sin Kilometraje: 0</span>
             </div>
-            <div class="control">
-              <button class="button is-info" id="search-button">
-                Buscar
-              </button>
+        </div>
+        <div class="crud-container">
+            <div class="crud-header">
+                <h1>Flota</h1>
+                <button class="button is-primary" id="export-excel">Exportar a Excel</button>
+                <button class="button is-success is-dark" id="nuevo">Nuevo</button>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Buscar por placa" id="search-input">
+                    </div>
+                    <div class="control">
+                        <button class="button is-info" id="search-button">Buscar</button>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="table-responsive">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>RIF</th>
+                            <th>GPS</th>
+                            <th>CAMARA</th>
+                            <th>Kilometraje</th>
+                            <th class="is-hidden-mobile">Última Revisión</th>
+                            <th>Detalles</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas se generarán dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="table-responsive">
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th>Placa</th>
-                <th>RIF</th>
-                <th>GPS</th>
-                <th>CAMARA</th>
-                <th class="is-hidden-mobile">última revisión</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="is-size-7-mobile"></td>
-                <td class="is-size-7-mobile"></td>
-                <td class="is-size-7-mobile"></td>
-                <td class="is-size-7-mobile"></td>
-                <td class="is-size-7-mobile is-hidden-mobile"></td>
-                <td>
-                  <button class="button is-warning is-dark is-small">E</button>
-                  <button class="button is-danger is-dark is-small">X</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </main>
-    <!-- Resto del código -->
-  </body>
-</html>
-  <div class="modal" id="modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Nuevo Vehiculo</p>
-      </header>
-      <section class="modal-card-body">
-        <form id="register-form">
-          <div class="field">
-            <label class="label">Placa</label>
-            <div class="control">
-              <input class="input" type="text" name="placa">
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">RIF</label>
-            <div class="control">
-              <div class="select">
-                <select name="rif">
-                  <option value="si">Sí</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">GPS</label>
-            <div class="control">
-              <div class="select">
-                <select name="gps">
-                  <option value="si">Sí</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">Cámara</label>
-            <div class="control">
-              <div class="select">
-                <select name="camara">
-                  <option value="si">Sí</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">Detalles</label>
-            <div class="control">
-              <textarea class="textarea" name="detalles"></textarea>
-            </div>
-          </div>
-      </section>
-      <footer class="modal-card-foot">
-        <div class="buttons">
-          <button type="submit" class="button is-success">Guardar</button>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Nuevo Vehículo</p>
+                <button class="delete" id="cancel" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <form id="register-form">
+                    <div class="field">
+                        <label class="label">Placa</label>
+                        <div class="control">
+                            <input class="input" type="text" name="placa" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">RIF</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="rif" required>
+                                    <option value="si">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">GPS</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="gps" required>
+                                    <option value="si">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Cámara</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="camara" required>
+                                    <option value="si">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Kilometraje</label>
+                        <div class="control">
+                            <input class="input" type="number" name="kilometraje" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Detalles</label>
+                        <div class="control">
+                            <textarea class="textarea" name="detalles"></textarea>
+                        </div>
+                    </div>
+                    <footer class="modal-card-foot">
+                        <button type="submit" class="button is-success">Guardar</button>
+                        <button type="button" class="button" id="cancel">Cancelar</button>
+                    </footer>
+                </form>
+            </section>
         </div>
-        </form>
-        <button class="button" id="cancel">Cancelar</button>
-      </footer>
     </div>
-  </div>
-  
-  <script type="module">
-    // Importar los módulos de Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
-    // Reemplaza con tu configuración de Firebase
-    const firebaseConfig = {
-  apiKey: "AIzaSyBz9VDD17ZiieA9lkSViIZts7TiYE2a4yE",
-  authDomain: "crud-85196.firebaseapp.com",
-  databaseURL: "https://crud-85196-default-rtdb.firebaseio.com",
-  projectId: "crud-85196",
-  storageBucket: "crud-85196.appspot.com",
-  messagingSenderId: "340343732832",
-  appId: "1:340343732832:web:af3aaddbef9d5c3a092105"
-};
-
-    // Inicializar Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-  </script>
-  <script type="module" src="js/app.js"></script>
+    <!-- Scripts -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
-
