@@ -1,0 +1,942 @@
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #14141f;
+    --bg-tertiary: #1e1e2e;
+    --neon-cyan: #aedd2b;
+    --neon-pink: #2e97b7;
+    --neon-purple: #dee7e7;
+    --neon-blue: #0066ff;
+    --neon-green: #00ff9d;
+    --neon-yellow: #ffff00;
+    --neon-red: #ff0066;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --glass-effect: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 255, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 255, 0.03) 0%, transparent 30%);
+}
+
+.neon-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100vh;
+    
+    
+    border-left: 1px solid rgba(8, 5, 46, 1);
+    border-right: 1px solid rgba(255, 0, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+}
+
+/* App Bar estilo Flutter */
+.app-bar {
+    background: var(--bg-tertiary);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    position: relative;
+}
+
+.app-bar::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--neon-cyan) 95%, 
+        var(--neon-pink) 80%, 
+        transparent 100%
+    );
+    animation: neonFlow 3s linear infinite;
+}
+
+@keyframes neonFlow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.app-bar-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.neon-icon {
+    font-size: 2rem;
+    
+    text-shadow: 0 0 10px var(--neon-cyan),
+                 0 0 20px var(--neon-cyan),
+                 0 0 30px var(--neon-cyan);
+    animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.neon-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    flex: 1;
+}
+
+.neon-title span {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink),
+                 0 0 20px var(--neon-pink);
+    margin-left: 0.5rem;
+}
+
+.app-bar-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.connection-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.connection-status.connected {
+    color: var(--neon-green);
+    filter: drop-shadow(0 0 10px var(--neon-green));
+    animation: connectedPulse 2s ease-in-out infinite;
+}
+
+.connection-status.disconnected {
+    color: var(--neon-red);
+    filter: drop-shadow(0 0 10px var(--neon-red));
+}
+
+@keyframes connectedPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Bottom Navigation estilo Flutter */
+.bottom-nav {
+    background: var(--bg-tertiary);
+    display: flex;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+.nav-item {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.75rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.nav-item span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+    color: var(--neon-cyan);
+}
+
+.nav-item.active i {
+    text-shadow: 0 0 10px var(--neon-cyan);
+    transform: translateY(-2px);
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-item:hover::before {
+    left: 100%;
+}
+
+/* Contenido principal */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon-cyan) var(--bg-tertiary);
+}
+
+.content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--neon-cyan), var(--neon-pink));
+    border-radius: 3px;
+}
+
+/* Tarjetas estilo Flutter */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.neon-card {
+    background: var(--bg-tertiary);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.neon-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--neon-cyan), 
+        var(--neon-pink), 
+        var(--neon-purple),
+        var(--neon-cyan)
+    );
+    border-radius: 18px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.neon-card:hover::before {
+    opacity: 0.3;
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.card-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* Gráficos */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-card {
+    background: var(--bg-tertiary);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.chart-card h3 {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+/* Tabla de vehículos */
+.vehicles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.vehicle-item {
+    background: var(--bg-tertiary);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.vehicle-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.2);
+}
+
+.vehicle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.vehicle-placa {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.vehicle-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-operativo {
+    background: rgba(0, 255, 255, 0.1);
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+}
+
+.status-mantenimiento {
+    background: rgba(255, 255, 0, 0.1);
+    color: var(--neon-yellow);
+    border: 1px solid var(--neon-yellow);
+}
+
+.status-baja {
+    background: rgba(255, 0, 255, 0.1);
+    color: var(--neon-pink);
+    border: 1px solid var(--neon-pink);
+}
+
+.vehicle-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.vehicle-sensors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.sensor-tag {
+    background: rgba(0, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: var(--neon-cyan);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.vehicle-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.vehicle-item:hover .vehicle-actions {
+    opacity: 1;
+}
+
+/* Modal estilo Flutter */
+.neon-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--bg-tertiary);
+    border-radius: 24px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+    animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.close-button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover {
+    color: var(--neon-pink);
+    transform: rotate(90deg);
+}
+
+/* Formularios */
+.neon-input-group {
+    padding: 1rem 1.5rem;
+}
+
+.neon-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.neon-label i {
+    margin-right: 0.5rem;
+    color: var(--neon-cyan);
+}
+
+.neon-input,
+.neon-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--bg-primary);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.neon-input:focus,
+.neon-select:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.sensors-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.neon-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.neon-checkbox:hover {
+    background: rgba(0, 255, 255, 0.1);
+    color: var(--neon-cyan);
+}
+
+.neon-checkbox input {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--neon-cyan);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+}
+
+.neon-checkbox input:checked + .checkmark {
+    background: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.neon-checkbox input:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--bg-primary);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.sensor-icon {
+    font-size: 1.1rem;
+}
+
+/* Botones estilo Flutter */
+.modal-actions {
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.neon-button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.neon-button.primary {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    color: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.neon-button.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.neon-button.primary:hover::before {
+    left: 100%;
+}
+
+.neon-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
+}
+
+.neon-button.secondary {
+    background: transparent;
+    border: 1px solid var(--neon-pink);
+    color: var(--neon-pink);
+}
+
+.neon-button.secondary:hover {
+    background: rgba(255, 0, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 0, 255, 0.3);
+}
+
+.neon-button.small {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    background: var(--bg-tertiary);
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+}
+
+/* Toast notifications */
+.neon-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    border: 1px solid var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2000;
+    transition: transform 0.3s ease;
+}
+
+.neon-toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.neon-toast.success {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+}
+
+.neon-toast.error {
+    border-color: var(--neon-red);
+    box-shadow: 0 0 20px rgba(255, 0, 102, 0.3);
+}
+
+/* Loading spinner */
+.neon-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bg-tertiary);
+    border-top-color: var(--neon-cyan);
+    border-right-color: var(--neon-pink);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .sensors-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .neon-title {
+        font-size: 1.2rem;
+    }
+}
+.app-bar-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+/* Añade esto al final de tu archivo style.css */
+
+/* Mejoras para el dashboard */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.charts-wrapper {
+    position: relative;
+    min-height: 400px;
+    width: 100%;
+}
+
+.chart-canvas-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+/* Barra de búsqueda y filtros */
+.search-bar {
+    background: var(--bg-tertiary);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+.search-input-wrapper i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neon-cyan);
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    background: var(--bg-primary);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-select {
+    padding: 0.75rem;
+    background: var(--bg-primary);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-primary);
+    min-width: 140px;
+}
+
+.filter-button {
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--neon-cyan);
+    border-radius: 8px;
+    color: var(--neon-cyan);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.filter-button:hover {
+    background: rgba(0, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Tabla de vehículos mejorada */
+.vehicles-table-container {
+    background: var(--bg-tertiary);
+    border-radius: 16px;
+    padding: 1rem;
+    overflow-x: auto;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.vehicles-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.vehicles-table th {
+    text-align: left;
+    padding: 1rem;
+    color: var(--neon-cyan);
+    font-weight: 600;
+    border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+}
+
+.vehicles-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.vehicles-table tbody tr:hover {
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.table-sensors {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Toolbar para acciones */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.pagination-button {
+    padding: 0.5rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-button:hover:not(:disabled) {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+}
+
+.pagination-button.active {
+    background: var(--neon-cyan);
+    color: var(--bg-primary);
+    border-color: var(--neon-cyan);
+}
+
+.pagination-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: var(--text-secondary);
+    margin: 0 1rem;
+}
+
+/* Badges para sensores */
+.sensor-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--neon-cyan);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+    }
+    
+    .vehicles-table {
+        font-size: 0.9rem;
+    }
+    
+    .vehicles-table th,
+    .vehicles-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}

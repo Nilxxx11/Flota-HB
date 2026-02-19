@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flota Neon • Control</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="neon-container">
+        <!-- Barra superior estilo Flutter -->
+        <div class="app-bar">
+            <div class="app-bar-content">
+                <img src="assets/logo.png" alt="Logo" class="app-bar-logo">
+                <h1 class="neon-title">Flota<span class="neon-glow">HB</span></h1>
+                <div class="app-bar-actions">
+                    <button class="neon-button small" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <div class="connection-status" id="connectionStatus">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation estilo Flutter -->
+        <div class="bottom-nav">
+            <button class="nav-item active" onclick="navigateTo('dashboard')">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('register')">
+                <i class="fas fa-plus-circle"></i>
+                <span>Registrar</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('vehicles')">
+                <i class="fas fa-list"></i>
+                <span>Vehículos</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('stats')">
+                <i class="fas fa-chart-bar"></i>
+                <span>Stats</span>
+            </button>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="content" id="content">
+            <!-- El contenido se carga dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Modal para registrar/editar vehículos (estilo Flutter) -->
+    <div id="vehicleModal" class="neon-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Registrar Vehículo</h2>
+                <button class="close-button" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="vehicleForm" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="vehicleId">
+                <input type="hidden" id="firebaseKey">
+                
+                <div class="neon-input-group">
+                    <label class="neon-label">
+                        <i class="fas fa-car"></i>
+                        PLACA
+                    </label>
+                    <input type="text" id="placa" class="neon-input" required 
+                           placeholder="ABC-123" maxlength="10">
+                </div>
+
+                <div class="neon-input-group">
+                    <label class="neon-label">
+                        <i class="fas fa-truck"></i>
+                        TIPO
+                    </label>
+                    <select id="tipo" class="neon-select" required>
+                        <option value="">Selecciona tipo</option>
+                        <option value="Automóvil">Automóvil</option>
+                        <option value="Camioneta">Camioneta</option>
+                        <option value="Camión">Camión</option>
+                        <option value="Motocicleta">Motocicleta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="neon-input-group">
+                    <label class="neon-label">
+                        <i class="fas fa-circle"></i>
+                        ESTADO
+                    </label>
+                    <select id="estado" class="neon-select" required>
+                        <option value="">Selecciona estado</option>
+                        <option value="Operativo">🟢 Operativo</option>
+                        <option value="Mantenimiento">🟡 Mantenimiento</option>
+                        <option value="Baja">🔴 Baja</option>
+                    </select>
+                </div>
+
+                <div class="neon-input-group">
+                    <label class="neon-label">
+                        <i class="fas fa-microchip"></i>
+                        SENSORES INSTALADOS
+                    </label>
+                    <div class="sensors-grid">
+                        <label class="neon-checkbox">
+                            <input type="checkbox" id="camara">
+                            <span class="checkmark"></span>
+                            <span class="sensor-icon">📷</span>
+                            Cámara
+                        </label>
+                        <label class="neon-checkbox">
+                            <input type="checkbox" id="sensorCombustible">
+                            <span class="checkmark"></span>
+                            <span class="sensor-icon">⛽</span>
+                            Sensor Combustible
+                        </label>
+                        <label class="neon-checkbox">
+                            <input type="checkbox" id="sensorRFID">
+                            <span class="checkmark"></span>
+                            <span class="sensor-icon">📡</span>
+                            Sensor RFID
+                        </label>
+                        <label class="neon-checkbox">
+                            <input type="checkbox" id="ibutton">
+                            <span class="checkmark"></span>
+                            <span class="sensor-icon">🔑</span>
+                            iButton
+                        </label>
+                        <label class="neon-checkbox">
+                            <input type="checkbox" id="gps">
+                            <span class="checkmark"></span>
+                            <span class="sensor-icon">📍</span>
+                            GPS
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="neon-button secondary" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                        CANCELAR
+                    </button>
+                    <button type="submit" class="neon-button primary">
+                        <i class="fas fa-save"></i>
+                        GUARDAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast para notificaciones -->
+    <div id="toast" class="neon-toast"></div>
+
+    <!-- Scripts -->
+    <script src="firebase/config.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
