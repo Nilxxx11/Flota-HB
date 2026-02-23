@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Flota</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts - Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6200ee;
+            --primary-variant: #3700b3;
+            --secondary: #03dac6;
+            --secondary-variant: #018786;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --error: #cf6679;
+            --on-primary: #ffffff;
+            --on-secondary: #000000;
+            --on-background: #ffffff;
+            --on-surface: #ffffff;
+            --on-error: #000000;
+            --surface-variant: #2c2c2c;
+            --elevation-1: 0 2px 4px rgba(0,0,0,0.3);
+            --elevation-2: 0 4px 8px rgba(0,0,0,0.4);
+            --elevation-3: 0 8px 16px rgba(0,0,0,0.5);
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--background);
+            color: var(--on-background);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flutter-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            background: var(--background);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-bar {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            box-shadow: var(--elevation-2);
+        }
+
+        .app-bar-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-bar-logo {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .app-bar-icon {
+            font-size: 2rem;
+            color: var(--on-primary);
+        }
+
+        .app-bar-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--on-primary);
+            flex: 1;
+            letter-spacing: 0.5px;
+        }
+
+        .app-bar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .bottom-nav {
+            background: var(--surface);
+            display: flex;
+            padding: 0.5rem;
+            gap: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            box-shadow: var(--elevation-2);
+        }
+
+        .nav-item {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(98,0,238,0.1);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--surface);
+        }
+
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: var(--surface);
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .material-card {
+            background: var(--surface);
+            border-radius: 4px;
+            padding: 1.5rem;
+            box-shadow: var(--elevation-1);
+            transition: box-shadow 0.2s;
+        }
+
+        .material-card:hover {
+            box-shadow: var(--elevation-2);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-bottom: 0.25rem;
+        }
+
+        .card-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: var(--surface);
+            border-radius: 4px;
+            padding: 1.5rem;
+            box-shadow: var(--elevation-1);
+        }
+
+        .chart-card h3 {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-card h3 i {
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        canvas {
+            max-height: 300px;
+            width: 100% !important;
+        }
+
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .vehicle-card {
+            background: var(--surface);
+            border-radius: 4px;
+            padding: 1rem;
+            box-shadow: var(--elevation-1);
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .vehicle-card:hover {
+            box-shadow: var(--elevation-2);
+            transform: translateY(-2px);
+        }
+
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .vehicle-placa {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-operativo {
+            background: rgba(3,218,198,0.2);
+            color: var(--secondary);
+        }
+
+        .status-mantenimiento {
+            background: rgba(255,152,0,0.2);
+            color: #ff9800;
+        }
+
+        .status-baja {
+            background: rgba(207,102,121,0.2);
+            color: var(--error);
+        }
+
+        .vehicle-details {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .vehicle-details div {
+            margin-bottom: 0.5rem;
+        }
+
+        .vehicle-details i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .sensors-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .sensor-tag {
+            background: rgba(98,0,238,0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        .vehicle-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .vehicle-card:hover .vehicle-actions {
+            opacity: 1;
+        }
+
+        .material-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 4px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--elevation-3);
+            animation: modalFadeIn 0.2s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: var(--on-surface);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .close-button {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .close-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .form-group {
+            padding: 1rem 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group label i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .material-input,
+        .material-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--surface-variant);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            color: var(--on-surface);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .material-input:focus,
+        .material-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .sensors-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .material-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: rgba(255,255,255,0.8);
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .material-checkbox:hover {
+            background: rgba(98,0,238,0.1);
+        }
+
+        .material-checkbox input {
+            display: none;
+        }
+
+        .checkbox-indicator {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--primary);
+            border-radius: 2px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .material-checkbox input:checked + .checkbox-indicator {
+            background: var(--primary);
+        }
+
+        .material-checkbox input:checked + .checkbox-indicator::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+        }
+
+        .sensor-icon {
+            font-size: 1.1rem;
+        }
+
+        .modal-actions {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .material-button {
+            background: transparent;
+            border: none;
+            color: var(--on-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .material-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .material-button.primary {
+            background: var(--primary);
+        }
+
+        .material-button.primary:hover {
+            background: var(--primary-variant);
+        }
+
+        .material-button.icon {
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .connection-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .connection-status.connected {
+            background: #4caf50;
+            box-shadow: 0 0 8px #4caf50;
+        }
+
+        .connection-status.disconnected {
+            background: var(--error);
+            box-shadow: 0 0 8px var(--error);
+        }
+
+        .material-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            color: var(--on-surface);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            box-shadow: var(--elevation-2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 2000;
+            transition: transform 0.2s;
+        }
+
+        .material-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .material-toast.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .material-toast.error {
+            border-left: 4px solid var(--error);
+        }
+
+        .material-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(98,0,238,0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--surface);
+            border-radius: 4px;
+            box-shadow: var(--elevation-1);
+        }
+
+        .loading-state .material-spinner {
+            margin: 0 auto 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--surface);
+            border-radius: 4px;
+            box-shadow: var(--elevation-1);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .sensors-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .app-bar-title {
+                font-size: 1.2rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flutter-container">
+        <!-- App Bar -->
+        <div class="app-bar">
+            <div class="app-bar-content">
+                <img src="assets/logo.png" alt="Logo" class="app-bar-logo" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <i class="fas fa-car-side app-bar-icon" style="display: none;"></i>
+                <h1 class="app-bar-title">CONTROL DE FLOTA</h1>
+                <div class="app-bar-actions">
+                    <button class="material-button icon" onclick="refreshData()" title="Actualizar">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <div class="connection-status" id="connectionStatus"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="content" id="content">
+            <div class="loading-state">
+                <div class="material-spinner"></div>
+                <p>Cargando aplicación...</p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-item active" onclick="navigateTo('dashboard')">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('register')">
+                <i class="fas fa-plus-circle"></i>
+                <span>Registrar</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('vehicles')">
+                <i class="fas fa-list"></i>
+                <span>Vehículos</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('stats')">
+                <i class="fas fa-chart-bar"></i>
+                <span>Stats</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="vehicleModal" class="material-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Registrar Vehículo</h2>
+                <button class="close-button" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="vehicleForm" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="vehicleId">
+                <input type="hidden" id="firebaseKey">
+                
+                <div class="form-group">
+                    <label><i class="fas fa-car"></i> PLACA</label>
+                    <input type="text" id="placa" class="material-input" required 
+                           placeholder="ABC-123" maxlength="10" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-truck"></i> TIPO</label>
+                    <select id="tipo" class="material-select" required>
+                        <option value="">Selecciona tipo</option>
+                        <option value="Automóvil">Automóvil</option>
+                        <option value="Camioneta">Camioneta</option>
+                        <option value="Camión">Camión</option>
+                        <option value="Motocicleta">Motocicleta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-circle"></i> ESTADO</label>
+                    <select id="estado" class="material-select" required>
+                        <option value="">Selecciona estado</option>
+                        <option value="Operativo">🟢 Operativo</option>
+                        <option value="Mantenimiento">🟡 Mantenimiento</option>
+                        <option value="Baja">🔴 Baja</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-microchip"></i> SENSORES</label>
+                    <div class="sensors-grid">
+                        <label class="material-checkbox">
+                            <input type="checkbox" id="camara">
+                            <span class="checkbox-indicator"></span>
+                            <span class="sensor-icon">📷</span> Cámara
+                        </label>
+                        <label class="material-checkbox">
+                            <input type="checkbox" id="sensorCombustible">
+                            <span class="checkbox-indicator"></span>
+                            <span class="sensor-icon">⛽</span> Combustible
+                        </label>
+                        <label class="material-checkbox">
+                            <input type="checkbox" id="sensorRFID">
+                            <span class="checkbox-indicator"></span>
+                            <span class="sensor-icon">📡</span> RFID
+                        </label>
+                        <label class="material-checkbox">
+                            <input type="checkbox" id="ibutton">
+                            <span class="checkbox-indicator"></span>
+                            <span class="sensor-icon">🔑</span> iButton
+                        </label>
+                        <label class="material-checkbox">
+                            <input type="checkbox" id="gps">
+                            <span class="checkbox-indicator"></span>
+                            <span class="sensor-icon">📍</span> GPS
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="material-button" onclick="closeModal()">CANCELAR</button>
+                    <button type="submit" class="material-button primary">GUARDAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="material-toast"></div>
+
+    <script>
+        // Configuración de Firebase - ¡REEMPLAZA CON TUS DATOS!
+        const firebaseConfig = {
+            apiKey: "AIzaSyBv7qQ7Q7Q7Q7Q7Q7Q7Q7Q7Q7Q7Q7Q7Q7Q",
+            authDomain: "tu-proyecto.firebaseapp.com",
+            databaseURL: "https://tu-proyecto-default-rtdb.firebaseio.com",
+            projectId: "tu-proyecto",
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456789"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const vehiclesRef = database.ref('vehicles');
+
+        // Variables globales
+        let currentPage = 'dashboard';
+        let vehicles = [];
+        let charts = {};
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('App iniciada');
+            initializeFirebaseListeners();
+            updateConnectionStatus();
+        });
+
+        // Listeners de Firebase
+        function initializeFirebaseListeners() {
+            vehiclesRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log('Datos recibidos:', data);
+                
+                vehicles = data ? Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                })) : [];
+                
+                vehicles.sort((a, b) => (b.fechaRegistro || 0) - (a.fechaRegistro || 0));
+                updateUI();
+                showToast('Datos actualizados', 'success');
+            }, (error) => {
+                console.error('Error:', error);
+                showToast('Error de conexión', 'error');
+            });
+        }
+
+        // Estado de conexión
+        function updateConnectionStatus() {
+            const connectedRef = database.ref('.info/connected');
+            const statusEl = document.getElementById('connectionStatus');
+            
+            connectedRef.on('value', (snap) => {
+                statusEl.className = snap.val() ? 'connection-status connected' : 'connection-status disconnected';
+            });
+        }
+
+        // Navegación
+        function navigateTo(page) {
+            currentPage = page;
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            loadPage(page);
+        }
+
+        function loadPage(page) {
+            const content = document.getElementById('content');
+            
+            switch(page) {
+                case 'dashboard':
+                    content.innerHTML = renderDashboard();
+                    setTimeout(initializeDashboardCharts, 200);
+                    break;
+                case 'register':
+                    openModal();
+                    break;
+                case 'vehicles':
+                    content.innerHTML = renderVehiclesList();
+                    break;
+                case 'stats':
+                    content.innerHTML = renderStatistics();
+                    setTimeout(initializeStatisticsCharts, 200);
+                    break;
+            }
+        }
+
+        // Renderizar Dashboard
+        function renderDashboard() {
+            if (vehicles.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <i class="fas fa-car"></i>
+                        <h3>No hay vehículos</h3>
+                        <p>Registra tu primer vehículo</p>
+                        <button class="material-button primary" onclick="openModal()">
+                            <i class="fas fa-plus"></i> REGISTRAR
+                        </button>
+                    </div>
+                `;
+            }
+
+            const stats = {
+                total: vehicles.length,
+                operativos: vehicles.filter(v => v.estado === 'Operativo').length,
+                mantenimiento: vehicles.filter(v => v.estado === 'Mantenimiento').length,
+                baja: vehicles.filter(v => v.estado === 'Baja').length
+            };
+
+            return `
+                <div class="stats-grid">
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-car"></i></div>
+                        <div class="card-value">${stats.total}</div>
+                        <div class="card-label">TOTAL</div>
+                    </div>
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="card-value">${stats.operativos}</div>
+                        <div class="card-label">OPERATIVOS</div>
+                    </div>
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-tools"></i></div>
+                        <div class="card-value">${stats.mantenimiento}</div>
+                        <div class="card-label">MANTENIMIENTO</div>
+                    </div>
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-times-circle"></i></div>
+                        <div class="card-value">${stats.baja}</div>
+                        <div class="card-label">BAJA</div>
+                    </div>
+                </div>
+                
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-pie"></i> ESTADOS</h3>
+                        <canvas id="estadoChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-bar"></i> TIPOS</h3>
+                        <canvas id="tipoChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3><i class="fas fa-microchip"></i> SENSORES</h3>
+                    <canvas id="sensoresChart"></canvas>
+                </div>
+            `;
+        }
+
+        // Renderizar lista de vehículos
+        function renderVehiclesList() {
+            if (vehicles.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <i class="fas fa-car"></i>
+                        <h3>No hay vehículos</h3>
+                        <p>Registra tu primer vehículo</p>
+                        <button class="material-button primary" onclick="openModal()">
+                            <i class="fas fa-plus"></i> REGISTRAR
+                        </button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="color: white;">${vehicles.length} vehículos</h3>
+                    <button class="material-button primary" onclick="openModal()">
+                        <i class="fas fa-plus"></i> NUEVO
+                    </button>
+                </div>
+                <div class="vehicles-grid">
+                    ${vehicles.map(v => renderVehicleCard(v)).join('')}
+                </div>
+            `;
+        }
+
+        function renderVehicleCard(v) {
+            const sensores = v.sensores || {};
+            const activos = [];
+            if (sensores.camara) activos.push('📷');
+            if (sensores.sensorCombustible) activos.push('⛽');
+            if (sensores.sensorRFID) activos.push('📡');
+            if (sensores.ibutton) activos.push('🔑');
+            if (sensores.gps) activos.push('📍');
+            
+            return `
+                <div class="vehicle-card" onclick="editVehicle('${v.id}')">
+                    <div class="vehicle-header">
+                        <span class="vehicle-placa">${v.placa || 'S/N'}</span>
+                        <span class="status-badge status-${(v.estado || 'operativo').toLowerCase()}">
+                            ${v.estado || 'Operativo'}
+                        </span>
+                    </div>
+                    <div class="vehicle-details">
+                        <div><i class="fas fa-tag"></i> ${v.tipo || 'No especificado'}</div>
+                        <div class="sensors-tags">
+                            ${activos.length ? activos.map(s => `<span class="sensor-tag">${s}</span>`).join('') : 
+                              '<span class="sensor-tag">Sin sensores</span>'}
+                        </div>
+                    </div>
+                    <div class="vehicle-actions">
+                        <button class="material-button icon" onclick="event.stopPropagation(); editVehicle('${v.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="material-button icon" onclick="event.stopPropagation(); deleteVehicle('${v.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Renderizar estadísticas
+        function renderStatistics() {
+            if (vehicles.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Sin datos</h3>
+                        <p>Registra vehículos para ver estadísticas</p>
+                    </div>
+                `;
+            }
+
+            let totalSensores = 0;
+            let maxSensores = 0;
+            vehicles.forEach(v => {
+                const s = v.sensores || {};
+                const count = Object.values(s).filter(Boolean).length;
+                totalSensores += count;
+                maxSensores = Math.max(maxSensores, count);
+            });
+            const promedio = totalSensores / vehicles.length;
+            const operativos = vehicles.filter(v => v.estado === 'Operativo').length;
+            const tasa = Math.round((operativos / vehicles.length) * 100);
+
+            return `
+                <div class="stats-grid">
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-microchip"></i></div>
+                        <div class="card-value">${totalSensores}</div>
+                        <div class="card-label">TOTAL SENSORES</div>
+                    </div>
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-calculator"></i></div>
+                        <div class="card-value">${promedio.toFixed(1)}</div>
+                        <div class="card-label">PROMEDIO</div>
+                    </div>
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-star"></i></div>
+                        <div class="card-value">${maxSensores}</div>
+                        <div class="card-label">MÁXIMO</div>
+                    </div>
+                    <div class="material-card">
+                        <div class="card-icon"><i class="fas fa-percent"></i></div>
+                        <div class="card-value">${tasa}%</div>
+                        <div class="card-label">OPERATIVIDAD</div>
+                    </div>
+                </div>
+                
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>DISTRIBUCIÓN SENSORES</h3>
+                        <canvas id="sensoresDistChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>TOP COMBINACIONES</h3>
+                        <canvas id="combinacionesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>ESTADO POR TIPO</h3>
+                    <canvas id="estadoTipoChart"></canvas>
+                </div>
+            `;
+        }
+
+        // Inicializar gráficos del dashboard
+        function initializeDashboardCharts() {
+            if (vehicles.length === 0) return;
+            
+            // Limpiar gráficos anteriores
+            Object.values(charts).forEach(c => c?.destroy());
+            charts = {};
+
+            // Gráfico de estados
+            const estadoCtx = document.getElementById('estadoChart');
+            if (estadoCtx) {
+                const estados = {
+                    'Operativo': vehicles.filter(v => v.estado === 'Operativo').length,
+                    'Mantenimiento': vehicles.filter(v => v.estado === 'Mantenimiento').length,
+                    'Baja': vehicles.filter(v => v.estado === 'Baja').length
+                };
+                
+                charts.estado = new Chart(estadoCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(estados),
+                        datasets: [{
+                            data: Object.values(estados),
+                            backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
+                            borderColor: '#1e1e1e',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+
+            // Gráfico de tipos
+            const tipoCtx = document.getElementById('tipoChart');
+            if (tipoCtx) {
+                const tipos = {};
+                vehicles.forEach(v => tipos[v.tipo] = (tipos[v.tipo] || 0) + 1);
+                
+                charts.tipo = new Chart(tipoCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(tipos),
+                        datasets: [{
+                            data: Object.values(tipos),
+                            backgroundColor: '#6200ee'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            x: { ticks: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+
+            // Gráfico de sensores
+            const sensoresCtx = document.getElementById('sensoresChart');
+            if (sensoresCtx) {
+                const sensores = { 'Cámara':0, 'Combustible':0, 'RFID':0, 'iButton':0, 'GPS':0 };
+                vehicles.forEach(v => {
+                    const s = v.sensores || {};
+                    if (s.camara) sensores['Cámara']++;
+                    if (s.sensorCombustible) sensores['Combustible']++;
+                    if (s.sensorRFID) sensores['RFID']++;
+                    if (s.ibutton) sensores['iButton']++;
+                    if (s.gps) sensores['GPS']++;
+                });
+                
+                charts.sensores = new Chart(sensoresCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(sensores),
+                        datasets: [{
+                            data: Object.values(sensores),
+                            backgroundColor: '#03dac6'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            x: { ticks: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Inicializar gráficos de estadísticas
+        function initializeStatisticsCharts() {
+            if (vehicles.length === 0) return;
+
+            // Distribución de sensores
+            const sensoresDistCtx = document.getElementById('sensoresDistChart');
+            if (sensoresDistCtx) {
+                const sensores = { 'Cámara':0, 'Combustible':0, 'RFID':0, 'iButton':0, 'GPS':0 };
+                vehicles.forEach(v => {
+                    const s = v.sensores || {};
+                    if (s.camara) sensores['Cámara']++;
+                    if (s.sensorCombustible) sensores['Combustible']++;
+                    if (s.sensorRFID) sensores['RFID']++;
+                    if (s.ibutton) sensores['iButton']++;
+                    if (s.gps) sensores['GPS']++;
+                });
+                
+                charts.sensoresDist = new Chart(sensoresDistCtx.getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(sensores),
+                        datasets: [{
+                            data: Object.values(sensores),
+                            backgroundColor: ['#6200ee', '#03dac6', '#ff9800', '#4caf50', '#f44336']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+
+            // Combinaciones de sensores
+            const comboCtx = document.getElementById('combinacionesChart');
+            if (comboCtx) {
+                const combos = {};
+                vehicles.forEach(v => {
+                    const s = v.sensores || {};
+                    const activos = [];
+                    if (s.camara) activos.push('📷');
+                    if (s.sensorCombustible) activos.push('⛽');
+                    if (s.sensorRFID) activos.push('📡');
+                    if (s.ibutton) activos.push('🔑');
+                    if (s.gps) activos.push('📍');
+                    const key = activos.length ? activos.join('+') : 'Sin sensores';
+                    combos[key] = (combos[key] || 0) + 1;
+                });
+                
+                const top5 = Object.entries(combos).sort((a,b) => b[1] - a[1]).slice(0,5);
+                
+                charts.combinaciones = new Chart(comboCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: top5.map(c => c[0]),
+                        datasets: [{
+                            data: top5.map(c => c[1]),
+                            backgroundColor: '#6200ee'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            x: { ticks: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+
+            // Estado por tipo
+            const estadoTipoCtx = document.getElementById('estadoTipoChart');
+            if (estadoTipoCtx) {
+                const tipos = [...new Set(vehicles.map(v => v.tipo))];
+                const datasets = [
+                    { label: 'Operativo', data: [], backgroundColor: '#4caf50' },
+                    { label: 'Mantenimiento', data: [], backgroundColor: '#ff9800' },
+                    { label: 'Baja', data: [], backgroundColor: '#f44336' }
+                ];
+                
+                tipos.forEach(tipo => {
+                    datasets[0].data.push(vehicles.filter(v => v.tipo === tipo && v.estado === 'Operativo').length);
+                    datasets[1].data.push(vehicles.filter(v => v.tipo === tipo && v.estado === 'Mantenimiento').length);
+                    datasets[2].data.push(vehicles.filter(v => v.tipo === tipo && v.estado === 'Baja').length);
+                });
+                
+                charts.estadoTipo = new Chart(estadoTipoCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: tipos, datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            x: { ticks: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Actualizar UI
+        function updateUI() {
+            if (currentPage === 'dashboard') {
+                document.getElementById('content').innerHTML = renderDashboard();
+                setTimeout(initializeDashboardCharts, 200);
+            } else if (currentPage === 'vehicles') {
+                document.getElementById('content').innerHTML = renderVehiclesList();
+            } else if (currentPage === 'stats') {
+                document.getElementById('content').innerHTML = renderStatistics();
+                setTimeout(initializeStatisticsCharts, 200);
+            }
+        }
+
+        // CRUD Operations
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const vehicleData = {
+                placa: document.getElementById('placa').value.toUpperCase(),
+                tipo: document.getElementById('tipo').value,
+                estado: document.getElementById('estado').value,
+                sensores: {
+                    camara: document.getElementById('camara').checked,
+                    sensorCombustible: document.getElementById('sensorCombustible').checked,
+                    sensorRFID: document.getElementById('sensorRFID').checked,
+                    ibutton: document.getElementById('ibutton').checked,
+                    gps: document.getElementById('gps').checked
+                },
+                fechaActualizacion: new Date().toISOString()
+            };
+
+            const firebaseKey = document.getElementById('firebaseKey').value;
+
+            if (firebaseKey) {
+                vehiclesRef.child(firebaseKey).update(vehicleData)
+                    .then(() => {
+                        showToast('Actualizado', 'success');
+                        closeModal();
+                    })
+                    .catch(error => showToast('Error: ' + error.message, 'error'));
+            } else {
+                vehicleData.fechaRegistro = new Date().toISOString();
+                vehiclesRef.push(vehicleData)
+                    .then(() => {
+                        showToast('Guardado', 'success');
+                        closeModal();
+                    })
+                    .catch(error => showToast('Error: ' + error.message, 'error'));
+            }
+        }
+
+        function editVehicle(id) {
+            const v = vehicles.find(v => v.id === id);
+            if (!v) return;
+            
+            document.getElementById('modalTitle').textContent = 'Editar Vehículo';
+            document.getElementById('vehicleId').value = id;
+            document.getElementById('firebaseKey').value = id;
+            document.getElementById('placa').value = v.placa || '';
+            document.getElementById('tipo').value = v.tipo || '';
+            document.getElementById('estado').value = v.estado || 'Operativo';
+            
+            const s = v.sensores || {};
+            document.getElementById('camara').checked = s.camara || false;
+            document.getElementById('sensorCombustible').checked = s.sensorCombustible || false;
+            document.getElementById('sensorRFID').checked = s.sensorRFID || false;
+            document.getElementById('ibutton').checked = s.ibutton || false;
+            document.getElementById('gps').checked = s.gps || false;
+            
+            openModal();
+        }
+
+        function deleteVehicle(id) {
+            if (confirm('¿Eliminar vehículo?')) {
+                vehiclesRef.child(id).remove()
+                    .then(() => showToast('Eliminado', 'success'))
+                    .catch(error => showToast('Error: ' + error.message, 'error'));
+            }
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('vehicleModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('vehicleModal').style.display = 'none';
+            document.getElementById('vehicleForm').reset();
+            document.getElementById('vehicleId').value = '';
+            document.getElementById('firebaseKey').value = '';
+            document.getElementById('modalTitle').textContent = 'Registrar Vehículo';
+        }
+
+        // Toast
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `material-toast ${type}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Refresh
+        function refreshData() {
+            showToast('Actualizando...', 'success');
+        }
+
+        // Click outside modal
+        window.onclick = function(event) {
+            const modal = document.getElementById('vehicleModal');
+            if (event.target === modal) closeModal();
+        };
+    </script>
+</body>
+</html>
